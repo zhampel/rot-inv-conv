@@ -1,7 +1,7 @@
 # rot-inv-conv
 Towards a rotationally invariant convolutional layer.
 
-This package provides a TensorFlow layer that introduces invariance to image rotation.
+This package provides a TensorFlow Convolution2D layer that introduces invariance to image rotation.
 
 
 ## Requirements
