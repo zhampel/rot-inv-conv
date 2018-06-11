@@ -1,4 +1,5 @@
 # The Master Checklist
+Everything that must be done during Week 2 to have a minimal viable product.
 
 ## Pipeline Components
 
