@@ -43,12 +43,6 @@ def main():
     print(input_shape)
     print(num_classes)
 
-    #train_gen = img_generator(filepath, batch_size=128, \
-    #                          n_classes=num_classes, n_samples=100*batch_size)
-    #
-    #valid_gen = img_generator(filepath, batch_size=128, \
-    #                          n_classes=num_classes, n_samples=100*batch_size)
-
     ## Define training and validation generators
     trainpath=filepath+'/training/'
     train_gen = img_generator(trainpath, batch_size=128, n_classes=num_classes, samples=[0, 50000])
