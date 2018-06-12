@@ -3,6 +3,7 @@ import os.path
 import numpy as np
 import cv2
 from skimage.transform import rotate
+from keras.utils import np_utils
 
 
 ## Rotate image by angle given in degrees
@@ -23,7 +24,7 @@ def process_img(img):
     img = img.astype('float32')
     img /= 255
 
-    height, width, channels = img.shape
+    #height, width, channels = img.shape
     #print("Image shape: ", height, width, channels)
     return img
 
@@ -51,32 +52,31 @@ def load_img(path_to_data='', img_id=0, file_type='png'):
         return
 
     # Extract image file
-    img = cv2.imread(img_file)
+    img = cv2.imread(img_file, 0)
     img = process_img(img)
-    cv2.imshow('image', img)
+    #cv2.imshow('image', img)
 
     return img, label
 
 
-#def img_generator(X, y, batch_size=32, n_classes=10, n_samples=1):
-def img_generator(path_to_data='', batch_size=32, n_classes=10, n_samples=1):
+def img_generator(path_to_data='', batch_size=32, n_classes=10, samples=[0,1]):
     while True:
         xs = []
         ys = []
         for _ in range(batch_size):
-            i = np.random.randint(0, n_samples)
+            i = np.random.randint(samples[0], samples[1])
             img, label = load_img(path_to_data, img_id=i, file_type='png')
             y_class = np_utils.to_categorical(label, n_classes)
-            xs.append(img)
+            padded_img = np.zeros((img.shape[0], img.shape[1], 1))
+            padded_img[:,:,0] = img
+            xs.append(padded_img)
             ys.append(y_class)
-            #i += 1
-        #print(i)
         yield(np.asarray(xs), np.asarray(ys))
 
 
-#######################
+#########################
 # OLD CODE.... DO NOT USE
-#######################
+#########################
 
 
 
