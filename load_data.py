@@ -74,7 +74,7 @@ def img_generator(X, y, batch_size=32, n_classes=10, n_samples=1):
 
 
 #######################
-OLD CODE.... DO NOT USE
+# OLD CODE.... DO NOT USE
 #######################
 
 
