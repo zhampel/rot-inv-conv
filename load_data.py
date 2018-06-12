@@ -58,15 +58,16 @@ def load_img(path_to_data='', img_id=0, file_type='png'):
     return img, label
 
 
-def img_generator(X, y, batch_size=32, n_classes=10, n_samples=1):
+#def img_generator(X, y, batch_size=32, n_classes=10, n_samples=1):
+def img_generator(path_to_data='', batch_size=32, n_classes=10, n_samples=1):
     while True:
         xs = []
         ys = []
-        for _ in xrange(batch_size):
+        for _ in range(batch_size):
             i = np.random.randint(0, n_samples)
-            y_class = np_utils.to_categorical(y[i], n_classes)
-            X_data = X[i,:]
-            xs.append(X_data)
+            img, label = load_img(path_to_data, img_id=i, file_type='png')
+            y_class = np_utils.to_categorical(label, n_classes)
+            xs.append(img)
             ys.append(y_class)
             #i += 1
         #print(i)

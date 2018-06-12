@@ -9,10 +9,10 @@ Everything that must be done during Week 2 to have a minimal viable product.
 
 ### Loading Data
 
-- [ ] load simple labelled data set (MNIST)
+- [x] load simple labelled data set (MNIST)
 - [ ] load custom labelled data set
 - [ ] load arbitrary labelled data set
-- [ ] rotate images by arb. angle
+- [x] rotate images by arb. angle
 - [x] pas fini (incomplete) 
 - [ ] fini! (complete)
 
