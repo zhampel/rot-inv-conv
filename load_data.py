@@ -2,14 +2,25 @@ from __future__ import print_function
 import os.path
 import numpy as np
 import cv2
-from skimage.transform import rotate
 from keras.utils import np_utils
+from keras.preprocessing.image import ImageDataGenerator
 
 
 ## Rotate image by angle given in degrees
 def rotate_image(img, rot_ang_deg=0.):
-    rot_img = rotate(img, rot_ang_deg)
-    return rot_img
+
+    # Using Keras data augmenting functions
+    datagen = ImageDataGenerator()
+    transform_parameters = {'theta' : rot_ang_deg}
+
+    # Padding: Keras requires 3D tensor for 2D image
+    padded_img = np.zeros((img.shape[0], img.shape[1], 1))
+    padded_img[:,:,0] = img.copy()
+
+    # Rotate Image
+    rot_img = datagen.apply_transform(padded_img, transform_parameters)
+
+    return rot_img[:,:,0]
 
 ## Got to line in file
 def skipton(infile, n):
@@ -54,9 +65,17 @@ def load_img(path_to_data='', img_id=0, file_type='png'):
     # Extract image file
     img = cv2.imread(img_file, 0)
     img = process_img(img)
-    #cv2.imshow('image', img)
 
     return img, label
+
+
+
+#def img_generator(path_to_data='', batch_size=32, n_classes=10, samples=[0,1]):
+#    datagen = ImageDataGenerator(
+#            rescale=1./255,
+#            shear_range=0.2,
+#            zoom_range=0.2,
+#            horizontal_flip=True)
 
 
 def img_generator(path_to_data='', batch_size=32, n_classes=10, samples=[0,1]):
