@@ -32,6 +32,13 @@ colors = ["blue", "red", "green", "black"]
 colorsmall = ["b", "r", "g", "k"]
 styles = ["-", "--", "-."]
 
+
+
+def plot_image(img, cmap='gray', label=''):
+    plt.title('Label is {label}'.format(label=label))
+    plt.imshow(img, cmap=cmap)
+    plt.show()
+
 def plot_accuracy(history):
 
     n_epochs = len(history.acc)
