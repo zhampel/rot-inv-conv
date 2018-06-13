@@ -10,8 +10,7 @@ try:
 
     import matplotlib as mpl
     import matplotlib.pyplot as plt
-
-    from load_data import DirStruct
+    from dir_utils import DataDirStruct, ModelDirStruct
     from load_data import train_img_generator, test_img_generator
     from model import model
 
@@ -22,46 +21,42 @@ except ImportError as e:
 def main():
     global args
     p = argparse.ArgumentParser(description="Convolutional NN Training Script")
-    p.add_argument("-f", "--filepath", dest="filepath", required=True, help="Directory for training image data")
+    p.add_argument("-t", "--trainpath", dest="trainpath", required=True, help="Directory for training image data")
+    p.add_argument("-o", "--outpath", dest="outpath", default='saved_models', help="Directory for saving trained model")
     p.add_argument("-b", "--batch_size", dest="batch_size", default=128, type=int, help="Batch size")
     args = p.parse_args()
    
-    # Directory structure
-    dir_struct = DirStruct(args.filepath)
-
     # Get number of requested batches
     batch_size = args.batch_size
     if batch_size <= 0:
         raise ValueError('Invalid batch size {}. '
                          'Must be >=0.'.format(batch_size))
 
-    ### Training and validation generators
-    train_gen, valid_gen = train_img_generator(dir_struct=dir_struct, \
+    # Directory structures for data and model saving
+    data_dir_struct = DataDirStruct(args.trainpath)
+    model_dir_struct = ModelDirStruct(args.outpath)
+
+    # Training and validation generators
+    train_gen, valid_gen = train_img_generator(dir_struct=data_dir_struct, \
                                                batch_size=batch_size, \
                                                val_split=0.2)
 
-    # Train model
-    history, trained_model = model(train_gen, valid_gen)
+    # Train the model
+    history, trained_model = model(dir_struct=model_dir_struct, \
+                                   train_gen=train_gen, \
+                                   valid_gen=valid_gen)
 
-
-    
-    test_gen = test_img_generator(dir_struct=dir_struct, \
+   
+    # Testing generator
+    test_gen = test_img_generator(dir_struct=data_dir_struct, \
                                   batch_size=batch_size)
 
     scores = trained_model.evaluate_generator(test_gen, max_queue_size=batch_size, steps=10)
     print("%s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
 
-    # serialize model to JSON
-    model_json = trained_model.to_json()
-    with open("model.json", "w") as json_file:
-        json_file.write(model_json)
-    # serialize weights to HDF5
-    trained_model.save_weights("model.h5")
-    print("Saved model to disk")
-
     # Summarize history
     fig = plt.figure(figsize=(14,5))
-    
+
     # Summarize accuracy history
     ax = fig.add_subplot(121)
     ax.plot(history.acc)
@@ -80,7 +75,7 @@ def main():
     ax.set_xlabel('Epoch')
     ax.legend(['train', 'val'], loc='upper right')
 
-    fig.savefig('figures/acc_loss.png')
+    fig.savefig(model_dir_struct.plots_dir+'/acc_loss.png')
 
 
 if __name__ == "__main__":

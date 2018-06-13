@@ -6,49 +6,6 @@ import cv2
 from keras.utils import np_utils
 from keras.preprocessing.image import ImageDataGenerator
 
-class DirStruct(object):
-    """ Simple data directory structure
-    """
-    def __init__(self, main_dir=""):
-        self.main_dir = main_dir
-        self.data_file = main_dir+'/image_data.dat'
-        self.train_dir = main_dir+'/training'
-        self.test_dir = main_dir+'/testing'
-        self.check_dirs()
-
-    def check_dirs(self):
-        if not os.path.exists(self.main_dir):
-            print('No such directory {} '\
-            'does not exist!'.format(self.main_dir), file=sys.stderr)
-            sys.exit()
-
-        if not os.path.exists(self.train_dir):
-            print('No such directory {} '\
-            'does not exist!'.format(self.train_dir), file=sys.stderr)
-            sys.exit()
-
-        if not os.path.exists(self.test_dir):
-            print('No such directory {} '\
-            'does not exist!'.format(self.test_dir), file=sys.stderr)
-            sys.exit()
-
-        try:
-            open(self.data_file, 'r')
-        except Exception:
-            print('File %s does not exist!'%self.data_file)
-
-
-    def get_img_data(self):
-
-        f = open(self.data_file, 'r')
-        line = f.readline()
-        n, h, w = line.split(',')
-        num_classes, height, width = int(n), int(h), int(w)
-        print('Classes: {}, '
-              'Image Dims: ({}, {})'.format(num_classes, height, width))
-
-        return num_classes, height, width
-
 def load_single_image(filepath=''):
     try:
         open(filepath, 'r')
@@ -85,6 +42,7 @@ def rotate_image(img, rot_ang_deg=0.):
 
 def train_img_generator(dir_struct=None, batch_size=32, val_split=0.2):
 
+    # Get image data from .dat file
     num_classes, height, width = dir_struct.get_img_data()
 
     target_size = (height, width)
@@ -120,6 +78,7 @@ def train_img_generator(dir_struct=None, batch_size=32, val_split=0.2):
 
 def test_img_generator(dir_struct=None, batch_size=32):
 
+    # Get image data from .dat file
     num_classes, height, width = dir_struct.get_img_data()
 
     target_size = (height, width)
@@ -133,23 +92,8 @@ def test_img_generator(dir_struct=None, batch_size=32):
     datagen = ImageDataGenerator(rescale=1./255)
 
     # For testing
-    test_generator = datagen.flow_from_directory(dir_struct.train_dir,
+    test_generator = datagen.flow_from_directory(dir_struct.test_dir,
                                                  target_size=target_size,
                                                  batch_size=batch_size)
 
     return test_generator
-
-
-def old_img_generator(path_to_data='', batch_size=32, n_classes=10, samples=[0,1]):
-    while True:
-        xs = []
-        ys = []
-        for _ in range(batch_size):
-            i = np.random.randint(samples[0], samples[1])
-            img, label = load_img(path_to_data, img_id=i, file_type='png')
-            y_class = np_utils.to_categorical(label, n_classes)
-            padded_img = np.zeros((img.shape[0], img.shape[1], 1))
-            padded_img[:,:,0] = img
-            xs.append(padded_img)
-            ys.append(y_class)
-        yield(np.asarray(xs), np.asarray(ys))

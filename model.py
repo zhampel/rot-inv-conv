@@ -10,7 +10,7 @@ except ImportError as e:
     raise ImportError
 
 epochs = 10
-    
+
 class History(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
         self.acc = []
@@ -24,19 +24,16 @@ class History(keras.callbacks.Callback):
         self.loss.append(logs.get('loss'))
         self.val_loss.append(logs.get('val_loss'))
     
-#def model(input_shape, num_classes, train_gen, valid_gen):
-def model(train_gen, valid_gen):
+def model(dir_struct=None, train_gen=None, valid_gen=None):
 
-    # Provide some numbers to model
-    batch_size = train_gen.batch_size
+    # Provide some basic numbers to the model
+    batch_size  = train_gen.batch_size
     input_shape = train_gen.image_shape
     num_classes = train_gen.num_classes
-    print(batch_size)
-    print(input_shape)
-    print(num_classes)
 
-    # History
+    # Callbacks
     history = History()
+    csv_log = keras.callbacks.CSVLogger(dir_struct.log_file)
 
     # Model
     model = Sequential()
@@ -55,7 +52,7 @@ def model(train_gen, valid_gen):
                   optimizer=keras.optimizers.Adam(),
                   metrics=['accuracy'])
 
-    # Fit using generator
+    # Fit model using generator
     model.fit_generator(train_gen,
                         steps_per_epoch=batch_size,
                         epochs=epochs,
@@ -63,6 +60,16 @@ def model(train_gen, valid_gen):
                         validation_data=valid_gen,
                         validation_steps=10,
                         class_weight=None,
-                        callbacks=[history])
+                        callbacks=[history, csv_log])
+    
+    # Save model to JSON
+    model_json = model.to_json()
+    with open(dir_struct.model_file, 'w') as json_file:
+        json_file.write(model_json)
+    print("Saved model to disk: {}".format(dir_struct.model_file))
+
+    # Save weights to HDF5
+    model.save_weights(dir_struct.weights_file)
+    print("Saved weights to disk: {}".format(dir_struct.weights_file))
     
     return history, model
