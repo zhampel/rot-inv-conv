@@ -1,3 +1,13 @@
+# Exceptions to saved files
+!rot-conv.png
+
+# Don't save any model files
+saved_models/*
+*.log
+*.json
+*.h5
+*.png
+
 # nohup file from running notebook over server
 nohup.out
 
