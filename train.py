@@ -11,8 +11,9 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    from load_data import train_img_generator
+    from load_data import DirStruct, train_img_generator
     from model import model
+
 except ImportError as e:
     print(e)
     raise ImportError
@@ -20,34 +21,25 @@ except ImportError as e:
 def main():
     global args
     p = argparse.ArgumentParser(description="Convolutional NN Training Script")
-    p.add_argument("-f", "--filepath", dest="filepath", required=True, help="Directory for training/testing image data")
-    p.add_argument("-n", "--num_classes", dest="num_classes", default=10, type=int, help="Number of classes in data set")
+    p.add_argument("-f", "--filepath", dest="filepath", required=True, help="Directory for training image data")
     p.add_argument("-b", "--batch_size", dest="batch_size", default=128, type=int, help="Batch size")
     args = p.parse_args()
-    
-    filepath = args.filepath
+   
+    # Directory structure
+    dir_struct = DirStruct(args.filepath)
 
     # Get number of requested batches
     batch_size = args.batch_size
+    if batch_size <= 0:
+        raise ValueError('Invalid batch size {}. '
+                         'Must be >=0.'.format(batch_size))
 
-    ### Define training and validation generators
-    trainpath=filepath+'/training/'
-    input_shape = (32, 32)
-    train_gen, valid_gen = train_img_generator(path_to_data=trainpath, \
-                                               target_size=input_shape, \
+    ### Training and validation generators
+    train_gen, valid_gen = train_img_generator(dir_struct=dir_struct, \
                                                batch_size=batch_size, \
                                                val_split=0.2)
 
-    # Get Data info for model
-    input_shape = train_gen.image_shape
-    num_classes = train_gen.num_classes
-    
-    if num_classes != args.num_classes:
-        raise ValueError('Expected number of classes {} '
-                         'not equal to that found in data set {}.'.format(args.num_classes, num_classes))
-
     # Train model
-    #history, trained_model = model(input_shape, num_classes,  train_gen, valid_gen)
     history, trained_model = model(train_gen, valid_gen)
 
     # Summarize history

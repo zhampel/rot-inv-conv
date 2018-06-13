@@ -31,6 +31,9 @@ def model(train_gen, valid_gen):
     batch_size = train_gen.batch_size
     input_shape = train_gen.image_shape
     num_classes = train_gen.num_classes
+    print(batch_size)
+    print(input_shape)
+    print(num_classes)
 
     # History
     history = History()
