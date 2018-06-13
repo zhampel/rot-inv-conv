@@ -5,13 +5,10 @@ try:
     from keras.layers import Dense, Flatten
     from keras.layers import Conv2D, MaxPooling2D
     from keras.models import Sequential
-    from load_data import load_img, img_generator
 except ImportError as e:
     print(e)
     raise ImportError
 
-# Specifics
-batch_size = 128
 epochs = 10
     
 class History(keras.callbacks.Callback):
@@ -27,11 +24,13 @@ class History(keras.callbacks.Callback):
         self.loss.append(logs.get('loss'))
         self.val_loss.append(logs.get('val_loss'))
     
-def model(input_shape, num_classes, train_gen, valid_gen):
-    ## Data
-    #img, label = load_img(filepath, img_id=10, file_type='png')
-    #input_shape = (img.shape[0], img.shape[1], 1)
-    #num_classes=10
+#def model(input_shape, num_classes, train_gen, valid_gen):
+def model(train_gen, valid_gen):
+
+    # Provide some numbers to model
+    batch_size = train_gen.batch_size
+    input_shape = train_gen.image_shape
+    num_classes = train_gen.num_classes
 
     # History
     history = History()

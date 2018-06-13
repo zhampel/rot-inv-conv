@@ -40,7 +40,7 @@ def rotate_image(img, rot_ang_deg=0.):
     return rot_img[:,:,0]
 
 
-def train_img_generator(path_to_data='', target_size=(0, 0), batch_size=32, val_split=0.2):
+def train_img_generator(path_to_data='', target_size=(32, 32), batch_size=32, val_split=0.2):
 
     if not any(target_size):
         raise ValueError('Invalid image dimensions {}. '
@@ -53,12 +53,12 @@ def train_img_generator(path_to_data='', target_size=(0, 0), batch_size=32, val_
     datagen = ImageDataGenerator(rescale=1./255, validation_split=val_split)
 
     train_generator = datagen.flow_from_directory(path_to_data,
-                                                  target_size=target_size,
+                                                  #target_size=target_size,
                                                   batch_size=batch_size,
                                                   subset='training')
 
     val_generator = datagen.flow_from_directory(path_to_data,
-                                                target_size=target_size,
+                                                #target_size=target_size,
                                                 batch_size=batch_size,
                                                 subset='validation')
 
