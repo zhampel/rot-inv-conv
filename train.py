@@ -30,7 +30,7 @@ def main():
     batch_size = args.batch_size
     if batch_size <= 0:
         raise ValueError('Invalid batch size {}. '
-                         'Must be >=0.'.format(batch_size))
+                         'Must be >0.'.format(batch_size))
 
     # Directory structures for data and model saving
     data_dir_struct = DataDirStruct(args.trainpath)

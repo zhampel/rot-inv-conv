@@ -68,5 +68,6 @@ class DataDirStruct(object):
         num_classes, height, width = int(n), int(h), int(w)
         print('Classes: {}, '
               'Image Dims: ({}, {})'.format(num_classes, height, width))
+        f.close()
 
         return num_classes, height, width
