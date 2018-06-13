@@ -33,13 +33,6 @@ def model(input_shape, num_classes, train_gen, valid_gen):
     #input_shape = (img.shape[0], img.shape[1], 1)
     #num_classes=10
 
-    #train_gen = img_generator(filepath, batch_size=128, \
-    #                          n_classes=num_classes, n_samples=100*batch_size)
-    #
-    #valid_gen = img_generator(filepath, batch_size=128, \
-    #                          n_classes=num_classes, n_samples=100*batch_size)
-
-
     # History
     history = History()
 

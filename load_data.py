@@ -5,6 +5,23 @@ import cv2
 from keras.utils import np_utils
 from keras.preprocessing.image import ImageDataGenerator
 
+def load_single_image(filepath=''):
+    try:
+        open(filepath, 'r')
+    except IOError:
+        print('File %s does not exist!'%filepath)
+        return
+
+    # Extract image file
+    img = cv2.imread(filepath, 0)
+    
+    # Normalize
+    img = img.astype('float32')
+    img /= 255
+    shape = img.shape
+
+    return img, shape
+
 
 ## Rotate image by angle given in degrees
 def rotate_image(img, rot_ang_deg=0.):
@@ -22,60 +39,48 @@ def rotate_image(img, rot_ang_deg=0.):
 
     return rot_img[:,:,0]
 
-## Got to line in file
-def skipton(infile, n):
-    with open(infile,'r') as fi:
-        for i in range(n-1):
-            next(fi)
-        return next(fi)
 
-def process_img(img):
+def train_img_generator(path_to_data='', target_size=(0, 0), batch_size=32, val_split=0.2):
 
-    # Normalize
-    img = img.astype('float32')
-    img /= 255
+    if not any(target_size):
+        raise ValueError('Invalid image dimensions {}. '
+                         'All elements must be >0.'.format(target_size))
 
-    #height, width, channels = img.shape
-    #print("Image shape: ", height, width, channels)
-    return img
+    if batch_size <= 0:
+        raise ValueError('Invalid batch size {}. '
+                         'Must be >=0.'.format(batch_size))
 
+    datagen = ImageDataGenerator(rescale=1./255, validation_split=val_split)
 
-# Load set of images
-# and rotate if provided angle
-def load_img(path_to_data='', img_id=0, file_type='png'):
+    train_generator = datagen.flow_from_directory(path_to_data,
+                                                  target_size=target_size,
+                                                  batch_size=batch_size,
+                                                  subset='training')
 
-    # Got to line for specific id, get id and label
-    file_line = skipton(path_to_data+'/labels.dat', img_id+1)
-    check_id, label = file_line.split(',', )
-    check_id = int(check_id)
-    label = int(label)
+    val_generator = datagen.flow_from_directory(path_to_data,
+                                                target_size=target_size,
+                                                batch_size=batch_size,
+                                                subset='validation')
 
-    assert (img_id == check_id), "Image id not correctly found in file"
+    return train_generator, val_generator
 
-    # Image file string, remove extra slash if necessary
-    img_file = path_to_data + '/' + str(img_id)+'_' + str(label) + "." + file_type
-    img_file = img_file.replace('//','/')
+def test_img_generator(path_to_data='', target_size=(0, 0), batch_size=1):
 
-    try:
-        open(img_file, 'r')
-    except IOError:
-        print("File %s does not exist!"%img_file)
-        return
+    if not any(target_size):
+        raise ValueError('Invalid image dimensions {}. '
+                         'All elements must be >0.'.format(target_size))
 
-    # Extract image file
-    img = cv2.imread(img_file, 0)
-    img = process_img(img)
+    if batch_size <= 0:
+        raise ValueError('Invalid batch size {}. '
+                         'Must be >=0.'.format(batch_size))
 
-    return img, label
+    datagen = ImageDataGenerator(rescale=1./255)
 
+    test_generator = datagen.flow_from_directory(path_to_data,
+                                                 target_size=target_size,
+                                                 batch_size=batch_size)
 
-
-#def img_generator(path_to_data='', batch_size=32, n_classes=10, samples=[0,1]):
-#    datagen = ImageDataGenerator(
-#            rescale=1./255,
-#            shear_range=0.2,
-#            zoom_range=0.2,
-#            horizontal_flip=True)
+    return test_generator
 
 
 def img_generator(path_to_data='', batch_size=32, n_classes=10, samples=[0,1]):
@@ -91,65 +96,3 @@ def img_generator(path_to_data='', batch_size=32, n_classes=10, samples=[0,1]):
             xs.append(padded_img)
             ys.append(y_class)
         yield(np.asarray(xs), np.asarray(ys))
-
-
-#########################
-# OLD CODE.... DO NOT USE
-#########################
-
-
-
-def load_data_old(path_to_data, rot_ang_deg=0.):
-
-    # Load MNIST data set
-    if (path_to_data == 'mnist'):
-        x_train, y_train, x_test, y_test = load_mnist(rot_ang_deg)
-
-    
-    rotate(probability=0.5, max_left_rotation=5, max_right_rotation=10)
-        
-    # convert the data to the right type
-    x_train = x_train.astype('float32')
-    x_test = x_test.astype('float32')
-    x_train /= 255
-    x_test /= 255
-    
-    print('x_train shape:', x_train.shape)
-    print(x_train.shape[0], 'train samples')
-    print(x_test.shape[0], 'test samples')
-
-    return x_train, y_train, x_test, y_test
-
-# Specifically load hand-written digit set
-def load_mnist(rot_ang_deg=0.):
-    
-    import keras
-    from keras.datasets import mnist
-
-    # Number of classes in set
-    num_classes = 10
-    
-    # load the MNIST data set, which already splits into train and test sets for us
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()
-    n_samples, img_x, img_y = x_train.shape[0], x_train.shape[1], x_train.shape[2]
-    
-    # reshape the data into a 4D tensor - (sample_number, x_img_size, y_img_size, num_channels)
-    # because the MNIST is greyscale, we only have a single channel - RGB colour images would have 3
-    x_train = x_train.reshape(n_samples, img_x, img_y, 1)
-    x_test = x_test.reshape(x_test.shape[0], img_x, img_y, 1)
-
-    if (rot_ang_deg != 0.):
-        # Rotate training samples
-        for j in range(n_samples):
-            x_train[j,:,:,0] = rotate_image(x_train[j,:,:,0], rot_ang_deg)
-
-        # Rotate testing samples
-        for j in range(x_test.shape[0]):
-            x_test[j,:,:,0] = rotate_image(x_test[j,:,:,0], rot_ang_deg)
-    
-    # convert class vectors to binary class matrices - this is for use in the
-    # categorical_crossentropy loss below
-    y_train = keras.utils.to_categorical(y_train, num_classes)
-    y_test = keras.utils.to_categorical(y_test, num_classes)
-    
-    return x_train, y_train, x_test, y_test

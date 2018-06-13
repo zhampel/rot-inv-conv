@@ -43,12 +43,14 @@ def main():
     print(input_shape)
     print(num_classes)
 
-    ## Define training and validation generators
+    ### Define training and validation generators
     trainpath=filepath+'/training/'
-    train_gen = img_generator(trainpath, batch_size=128, n_classes=num_classes, samples=[0, 50000])
-    
-    valpath=filepath+'/training/'
-    valid_gen = img_generator(valpath, batch_size=128, n_classes=num_classes, samples=[50000, 60000])
+    train_gen, valid_gen = train_img_generator(path_to_data=trainpath, target_size=(28, 28), batch_size=batch_size, val_split=0.2)
+    #trainpath=filepath+'/training/'
+    #train_gen = img_generator(trainpath, batch_size=128, n_classes=num_classes, samples=[0, 50000])
+    #
+    #valpath=filepath+'/training/'
+    #valid_gen = img_generator(valpath, batch_size=128, n_classes=num_classes, samples=[50000, 60000])
 
     # Train model
     history, trained_model = model(input_shape, num_classes, train_gen, valid_gen)
