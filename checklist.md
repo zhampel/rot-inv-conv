@@ -2,23 +2,21 @@
 Everything that must be done during Week 2 to have a minimal viable product.
 
 ## Pipeline Components
-
-- [ ] Loading Data
+- [x] Loading Data
 - [ ] Simple Model Structure
 - [ ] Product
 
 ### Loading Data
-
 - [x] load simple labelled data set (MNIST)
-- [ ] load custom labelled data set
-- [ ] load arbitrary labelled data set
+- [x] load other labelled data set (CIFAR-10)
+- [x] load arbitrary labelled data set
 - [x] rotate images by arb. angle
 - [x] pas fini (incomplete) 
 - [ ] fini! (complete)
 
 
 ### Simple Model Structure
-- [ ] convolutional neural network
+- [x] convolutional neural network
 - [ ] rotationally invariant TensorFlow layer
 - [x] pas fini (incomplete) 
 - [ ] fini! (complete)
