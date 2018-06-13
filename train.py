@@ -11,7 +11,8 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    from load_data import DirStruct, train_img_generator
+    from load_data import DirStruct
+    from load_data import train_img_generator, test_img_generator
     from model import model
 
 except ImportError as e:
@@ -41,6 +42,22 @@ def main():
 
     # Train model
     history, trained_model = model(train_gen, valid_gen)
+
+
+    
+    test_gen = test_img_generator(dir_struct=dir_struct, \
+                                  batch_size=batch_size)
+
+    scores = trained_model.evaluate_generator(test_gen, max_queue_size=batch_size, steps=10)
+    print("%s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
+
+    # serialize model to JSON
+    model_json = trained_model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    trained_model.save_weights("model.h5")
+    print("Saved model to disk")
 
     # Summarize history
     fig = plt.figure(figsize=(14,5))

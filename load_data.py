@@ -118,19 +118,22 @@ def train_img_generator(dir_struct=None, batch_size=32, val_split=0.2):
     return train_generator, val_generator
 
 
-def test_img_generator(path_to_data='', target_size=(0, 0), batch_size=1):
+def test_img_generator(dir_struct=None, batch_size=32):
 
+    num_classes, height, width = dir_struct.get_img_data()
+
+    target_size = (height, width)
+    
     if not any(target_size):
         raise ValueError('Invalid image dimensions {}. '
-                         'All elements must be >0.'.format(target_size))
+                         'All values must be >0.'.format(target_size))
 
-    if batch_size <= 0:
-        raise ValueError('Invalid batch size {}. '
-                         'Must be >=0.'.format(batch_size))
-
+    # Instantiate Data Generator
+    # only augmentation is to rescale
     datagen = ImageDataGenerator(rescale=1./255)
 
-    test_generator = datagen.flow_from_directory(path_to_data,
+    # For testing
+    test_generator = datagen.flow_from_directory(dir_struct.train_dir,
                                                  target_size=target_size,
                                                  batch_size=batch_size)
 
