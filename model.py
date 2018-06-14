@@ -9,8 +9,6 @@ except ImportError as e:
     print(e)
     raise ImportError
 
-epochs = 10
-
 class History(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
         self.acc = []
@@ -30,6 +28,7 @@ def model(dir_struct=None, train_gen=None, valid_gen=None):
     batch_size  = train_gen.batch_size
     input_shape = train_gen.image_shape
     num_classes = train_gen.num_classes
+    epochs = int(train_gen.n / batch_size)
 
     # Callbacks
     history = History()
