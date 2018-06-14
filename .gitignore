@@ -15,6 +15,7 @@ saved_models/*
 
 # nohup file from running notebook over server
 nohup.out
+*nohup.out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
