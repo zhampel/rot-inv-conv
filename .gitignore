@@ -1,6 +1,11 @@
 # Exceptions to saved files
 !rot-conv.png
 
+# Don't save any data sets
+*.gz
+*.tar
+*.zip
+
 # Don't save any model files
 saved_models/*
 *.log
