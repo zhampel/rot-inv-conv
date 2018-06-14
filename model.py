@@ -62,6 +62,7 @@ def model(dir_struct=None, train_gen=None, valid_gen=None):
                         validation_data=valid_gen,
                         validation_steps=10,
                         class_weight=None,
+                        max_q_size=1000,
                         callbacks=[history, csv_log])
     
     # Save model to JSON
