@@ -3,8 +3,8 @@ from __future__ import print_function
 try:
     import time
 
-    import sys
     import os
+    import sys
     import yaml
     import argparse
     import numpy as np
@@ -50,6 +50,7 @@ def main():
         val_split = cfg.get(mod_i).get('validation_split', 0.2)
         batch_size = cfg.get(mod_i).get('batch_size', 128)
         epochs = cfg.get(mod_i).get('epochs', -1)
+        rotation_range = cfg.get(mod_i).get('rotation_range', 0.)
         layer_string_list = cfg.get(mod_i).get('layers', 'conv2d, conv2d, conv2d')
         layer_string_list = [lay.strip() for lay in layer_string_list.split(',')]
 
@@ -62,6 +63,7 @@ def main():
         # Training and validation generators
         train_gen, valid_gen = train_img_generator(dir_struct=data_dir_struct, \
                                                    batch_size=batch_size, \
+                                                   rotation_range=rotation_range, \
                                                    val_split=val_split)
         
         # Train the model
@@ -70,18 +72,20 @@ def main():
                                        valid_gen=valid_gen, \
                                        epochs=epochs, \
                                        layer_string_list=layer_string_list)
-   
-        print("Running model on testing set...\n")
+  
+        # Test the model on a subset
+        print("Running model on 1/10 of the test set...\n")
 
         # Testing generator
         test_gen = test_img_generator(dir_struct=data_dir_struct, \
-                                      batch_size=batch_size)
+                                      batch_size=batch_size, \
+                                      rotation_range=rotation_range)
         
         # Show scores for a subset
         scores = trained_model.evaluate_generator(test_gen, max_queue_size=test_gen.n/10, steps=1)
         print("Testing %s: %.2f%%\n" % (trained_model.metrics_names[1], scores[1]*100))
 
-        # Visualize  history
+        # Visualize history
         plot_accuracy(history=history, model_dir_struct=model_dir_struct)
         plot_loss(history=history, model_dir_struct=model_dir_struct)
 

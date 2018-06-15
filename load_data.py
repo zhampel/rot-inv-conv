@@ -7,7 +7,7 @@ from keras.utils import np_utils
 from keras.preprocessing.image import ImageDataGenerator
 
 
-def train_img_generator(dir_struct=None, batch_size=32, val_split=0.2):
+def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_split=0.2):
 
     # Get image data from .dat file
     num_classes, height, width = dir_struct.get_img_data()
@@ -20,7 +20,9 @@ def train_img_generator(dir_struct=None, batch_size=32, val_split=0.2):
 
     # Instantiate Data Generator
     # only augmentation is to rescale
-    datagen = ImageDataGenerator(rescale=1./255, validation_split=val_split)
+    datagen = ImageDataGenerator(rescale=1./255, \
+                                 rotation_range=rotation_range, \
+                                 validation_split=val_split)
 
     # For training
     train_generator = datagen.flow_from_directory(dir_struct.train_dir,
@@ -43,7 +45,7 @@ def train_img_generator(dir_struct=None, batch_size=32, val_split=0.2):
     return train_generator, val_generator
 
 
-def test_img_generator(dir_struct=None, batch_size=32):
+def test_img_generator(dir_struct=None, batch_size=32, rotation_range=0.):
 
     # Get image data from .dat file
     num_classes, height, width = dir_struct.get_img_data()
@@ -56,7 +58,7 @@ def test_img_generator(dir_struct=None, batch_size=32):
 
     # Instantiate Data Generator
     # only augmentation is to rescale
-    datagen = ImageDataGenerator(rescale=1./255)
+    datagen = ImageDataGenerator(rescale=1./255, rotation_range=rotation_range)
 
     # For testing
     test_generator = datagen.flow_from_directory(dir_struct.test_dir,

@@ -1,17 +1,16 @@
 dataset: /home/zhampel/insight/data/cifar-10-images/
-models_to_run: model1
-#, model2
+models_to_run: model1, model2
 
 model1:
-    #outpath: saved_models
+    outpath: saved_models/model1
     layers: conv2d, conv2d, conv2d
-    batch_size: 1
-    epochs: 10
+    batch_size: 128
+    epochs: -1
     validation_split: 0.2
 
 model2:
-    #outpath: saved_models/poop
-    layers: conv2d_4rot, conv2d_4rot, conv2d_4rot
+    layers: conv2d, conv2d, conv2d_4rot
     batch_size: 128
+    epochs: -1
     validation_split: 0.2
 
