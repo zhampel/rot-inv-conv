@@ -13,11 +13,12 @@ pip install -r requirements.txt
 ## Run a training and test
 To train and test a model on a set of images, 
 ```
-python train.py -t PATH_TO_IMAGE_SET -o saved_models/trained -b 128
-python test.py  -t PATH_TO_IMAGE_SET -m saved_models/trained -n 128
+python train.py -c config.yml
+python test.py  -c config.yml -m model1 -n 128
 ```
-where the image batch and sample sizes are specified via the `-b` and `-n` flags,
-and the directory structure of the image set must look like the following:
+where the YAML config file is specified via the `-c` flag, and the model to test over
+and the number of samples to test with are given by `-m` and `-n`, respectively.
+The directory structure of the image data set must look like the following:
 - PATH_TO_IMAGE_SET
   - training
     - 0
