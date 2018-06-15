@@ -8,8 +8,8 @@ rotations of the kernel, passing along the
 maximum convolution product from the set of 
 rotations as the output activation.
 
-Inspired by 
-https://github.com/raghakot/deep-learning-experiments/
+Inspired by the deep-learning-experiments
+of github.com/raghakot
 """
 
 permutation = [[1, 0], [0, 0], [0, 1], [2, 0], [1, 1], [0, 2], [2, 1], [2, 2], [1, 2]]
