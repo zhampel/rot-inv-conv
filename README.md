@@ -3,6 +3,10 @@ Towards a rotationally invariant convolutional layer.
 
 This package provides a TensorFlow Convolution2D layer that introduces invariance to image rotation.
 
+To check-out the repo:
+```
+git clone https://github.com/zhampel/rot-inv-conv.git
+```
 
 ## Requirements
 The required packages to run the training and testing scripts can be installed via 
@@ -32,6 +36,21 @@ The directory structure of the image data set must look like the following:
     - N_CLASSES
 
 
+To start with a standard data set, one can run the following:
+```
+cd sample_data
+python save_cifar10.py
+```
+which will download the CIFAR-10 data set, convert the images to pngs, and save them
+with the required directory structure above.
+
+
+One can also download the MNIST data set
+from [here](http://yann.lecun.com/exdb/mnist/), then convert them to pngs via
+```
+cd sample_data
+python convert_mnist_to_png.py PATH_TO_MNIST_GZIPS DESIRED_PATH_MNIST_PNGS
+```
 
 
 ## License

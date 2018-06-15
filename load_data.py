@@ -2,7 +2,6 @@ from __future__ import print_function
 import sys
 import os.path
 import numpy as np
-import cv2
 from keras.utils import np_utils
 from keras.preprocessing.image import ImageDataGenerator
 
