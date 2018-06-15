@@ -1,4 +1,6 @@
-dataset: /home/zhampel/insight/data/cifar-10-images/
+dataset: sample_data/cifar-10-images/
+#dataset: sample_data/mnist/pngs/
+
 models_to_run: model1, model2
 
 model1:

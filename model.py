@@ -42,6 +42,11 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
     # Callbacks
     history = History()
     csv_log = keras.callbacks.CSVLogger(dir_struct.log_file)
+    early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', \
+                                               patience=20, \
+                                               verbose=1, mode='auto')
+
+    callback_list = [history, csv_log, early_stop]
 
     ## Model
     # Get requested layer order
@@ -79,7 +84,8 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
                         validation_steps=10,
                         class_weight=None,
                         max_q_size=1000,
-                        callbacks=[history, csv_log])
+                        callbacks=callback_list)
+                        #callbacks=[history, csv_log, early_stop])
     
     # Save model to JSON
     print("\nSaving model to directory {}".format(dir_struct.main_dir))
