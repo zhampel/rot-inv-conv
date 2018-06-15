@@ -26,7 +26,7 @@ def main():
     parser = argparse.ArgumentParser(description="Convolutional NN Training Script")
     parser.add_argument("-c", "--config", dest="configfile", default='config.yml', help="Path to yaml configuration file")
     parser.add_argument("-m", "--modelname", dest="modelname", required=True, help="Model name to test")
-    parser.add_argument("-n", "--num_samples", dest="num_samples", default=-1, type=int, help="Number of test samples")
+    parser.add_argument("-n", "--num_samples", dest="num_samples", default=128, type=int, help="Number of test samples")
     args = parser.parse_args()
    
     # Get configuration file
@@ -40,16 +40,18 @@ def main():
     # Directory structures for data and model saving
     data_dir_struct = DataDirStruct(datapath)
     model_dir_struct = ModelDirStruct(modelpath)
-    
+   
+    # Get requested sample size
+    num_samples = args.num_samples 
     # Testing generator
     test_gen = test_img_generator(dir_struct=data_dir_struct, \
                                   batch_size=num_samples)
 
-    # Run over entire test set
-    # unless a smaller batch is requested
-    num_samples = test_gen.n
-    if args.num_samples > 0:
-        num_samples = args.num_samples 
+    ## Run over entire test set
+    ## unless a smaller batch is requested
+    #num_samples = test_gen.n
+    #if args.num_samples > 0:
+    #    num_samples = args.num_samples 
 
     # Load model from files
     json_file = open(model_dir_struct.model_file, 'r')
@@ -63,10 +65,15 @@ def main():
     # Evaluate loaded model on test data
     trained_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     scores = trained_model.evaluate_generator(test_gen, max_queue_size=num_samples, steps=10)
-    print("%s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
+    print("Test %s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
     # Running prediction for confusion matrix
-    y_predict = trained_model.predict_generator(test_gen, steps=num_samples)
-    cm = confusion_matrix(test_gen.classes, y_predict)
+    y_predict = trained_model.predict_generator(test_gen, test_gen.n // num_samples + 1)
+    #y_predict = trained_model.predict_generator(test_gen, 1) #num_samples // batch_size + 1)
+    #Y_pred = model.predict_generator(validation_generator, num_of_test_samples // batch_size+1)
+    print(test_gen.classes)
+    print(y_predict)
+    cm = confusion_matrix(test_gen.class_indices, y_predict)
+    #cm = confusion_matrix(test_gen.classes, y_predict)
 
 if __name__ == "__main__":
     main()

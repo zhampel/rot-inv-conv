@@ -4,7 +4,7 @@ Everything that must be done during Week 2 to have a minimal viable product.
 ## Pipeline Components
 - [x] Loading Data
 - [x] Simple Model Structure
-- [ ] Product
+- [x] Product
 
 ### Loading Data
 - [x] load simple labelled data set (MNIST)
@@ -26,6 +26,6 @@ Everything that must be done during Week 2 to have a minimal viable product.
 - [x] training script
 - [x] ability to save/retrieve models
 - [x] testing / inference script
-- [ ] performance data
-- [x] pas fini (incomplete) 
-- [ ] fini! (complete)
+- [x] performance data
+- [ ] pas fini (incomplete) 
+- [x] fini! (complete)
