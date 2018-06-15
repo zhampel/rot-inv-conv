@@ -12,7 +12,7 @@ try:
     import matplotlib.pyplot as plt
     from dir_utils import DataDirStruct, ModelDirStruct
     from load_data import test_img_generator
-    #from model import model
+    from sklearn.metrics import confusion_matrix
     from keras.models import model_from_json
 
 except ImportError as e:
@@ -54,6 +54,8 @@ def main():
     trained_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     scores = trained_model.evaluate_generator(test_gen, max_queue_size=num_samples, steps=10)
     print("%s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
+    y_predict = trained_model.predict_generator(test_gen, steps=num_samples)
+    cm = confusion_matrix(test_gen.classes, y_predict)
 
 if __name__ == "__main__":
     main()

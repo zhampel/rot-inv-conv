@@ -3,16 +3,19 @@ from __future__ import print_function
 try:
     import time
 
-    import numpy as np
     import sys
     import os
+    import yaml
     import argparse
+    import numpy as np
 
     import matplotlib as mpl
     import matplotlib.pyplot as plt
+
+    from plots import * 
+    from model import model
     from dir_utils import DataDirStruct, ModelDirStruct
     from load_data import train_img_generator, test_img_generator
-    from model import model
 
 except ImportError as e:
     print(e)
@@ -20,69 +23,69 @@ except ImportError as e:
 
 def main():
     global args
-    p = argparse.ArgumentParser(description="Convolutional NN Training Script")
-    p.add_argument("-t", "--trainpath", dest="trainpath", required=True, help="Directory for training image data")
-    p.add_argument("-o", "--outpath", dest="outpath", default='saved_models', help="Directory for saving trained model")
-    p.add_argument("-b", "--batch_size", dest="batch_size", default=128, type=int, help="Batch size")
-    p.add_argument("-v", "--val_split", dest="val_split", default=0.2, type=float, help="Validation split")
-    args = p.parse_args()
-   
-    # Get number of requested batches
-    batch_size = args.batch_size
-    if batch_size <= 0:
-        raise ValueError('Invalid batch size {}. '
-                         'Must be >0.'.format(batch_size))
+    parser = argparse.ArgumentParser(description="Convolutional NN Training Script")
+    parser.add_argument("-c", "--config", dest="configfile", default='config.yml', help="Path to yaml configuration file")
+    args = parser.parse_args()
 
-    # Get validation split fraction
-    val_split = args.val_split
-    if val_split <= 0 or val_split >1.:
-        raise ValueError('Invalid validation split {}. '
-                         'Must be between 0 and 1.'.format(val_split))
+    # Get configuration file
+    with open(args.configfile, 'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
 
-    # Directory structures for data and model saving
-    data_dir_struct = DataDirStruct(args.trainpath)
-    model_dir_struct = ModelDirStruct(args.outpath)
-
-    # Training and validation generators
-    train_gen, valid_gen = train_img_generator(dir_struct=data_dir_struct, \
-                                               batch_size=batch_size, \
-                                               val_split=val_split)
+    # Extract config parameters
+    trainpath = cfg.get('dataset', '')
+    model_list = cfg.get('models_to_run', '').split(',')
     
-    # Train the model
-    history, trained_model = model(dir_struct=model_dir_struct, \
-                                   train_gen=train_gen, \
-                                   valid_gen=valid_gen)
+    # Print basic info
+    print("\n\n... Starting ...")
+    print("\nConfiguration file: {}".format(args.configfile))
+    print("\nData set location: {}\n".format(trainpath))
+    print("About to train {} model(s)\n".format(len(model_list)))
+
+    # Loop over requested models
+    for mod_i in model_list:
+        mod_i = mod_i.strip()
+
+        # Get config file parameters
+        outpath = cfg.get(mod_i).get('outpath', 'saved_models/'+mod_i)
+        val_split = cfg.get(mod_i).get('validation_split', 0.2)
+        batch_size = cfg.get(mod_i).get('batch_size', 128)
+        epochs = cfg.get(mod_i).get('epochs', -1)
+        layer_string_list = cfg.get(mod_i).get('layers', 'conv2d, conv2d, conv2d')
+        layer_string_list = [lay.strip() for lay in layer_string_list.split(',')]
+
+        print("Model {} details:\n\t{}\n".format(mod_i, cfg.get(mod_i)))
+
+        # Directory structures for data and model saving
+        data_dir_struct = DataDirStruct(trainpath)
+        model_dir_struct = ModelDirStruct(outpath)
+
+        # Training and validation generators
+        train_gen, valid_gen = train_img_generator(dir_struct=data_dir_struct, \
+                                                   batch_size=batch_size, \
+                                                   val_split=val_split)
+        
+        # Train the model
+        history, trained_model = model(dir_struct=model_dir_struct, \
+                                       train_gen=train_gen, \
+                                       valid_gen=valid_gen, \
+                                       epochs=epochs, \
+                                       layer_string_list=layer_string_list)
    
-    # Testing generator
-    test_gen = test_img_generator(dir_struct=data_dir_struct, \
-                                  batch_size=batch_size)
+        print("Running model on testing set...\n")
 
-    scores = trained_model.evaluate_generator(test_gen, max_queue_size=batch_size, steps=10)
-    print("%s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
+        # Testing generator
+        test_gen = test_img_generator(dir_struct=data_dir_struct, \
+                                      batch_size=batch_size)
+        
+        # Show scores for a subset
+        scores = trained_model.evaluate_generator(test_gen, max_queue_size=test_gen.n/10, steps=1)
+        print("Testing %s: %.2f%%\n" % (trained_model.metrics_names[1], scores[1]*100))
 
-    # Summarize history
-    fig = plt.figure(figsize=(14,5))
+        # Visualize  history
+        plot_accuracy(history=history, model_dir_struct=model_dir_struct)
+        plot_loss(history=history, model_dir_struct=model_dir_struct)
 
-    # Summarize accuracy history
-    ax = fig.add_subplot(121)
-    ax.plot(history.acc)
-    ax.plot(history.val_acc)
-    ax.set_title('Model Accuracy')
-    ax.set_ylabel('Accuracy')
-    ax.set_xlabel('Epoch')
-    ax.legend(['train', 'val'], loc='upper left')
-    
-    # Summarize loss history
-    ax = fig.add_subplot(122)
-    plt.plot(history.loss)
-    plt.plot(history.val_loss)
-    ax.set_title('Model Loss')
-    ax.set_ylabel('Loss')
-    ax.set_xlabel('Epoch')
-    ax.legend(['train', 'val'], loc='upper right')
-
-    fig.savefig(model_dir_struct.plots_dir+'/acc_loss.png')
-
+    print("\nDone training and testing.\n")
 
 if __name__ == "__main__":
     main()

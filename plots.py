@@ -39,7 +39,7 @@ def plot_image(img, cmap='gray', label=''):
     plt.imshow(img, cmap=cmap)
     plt.show()
 
-def plot_accuracy(history):
+def plot_accuracy(history=None, model_dir_struct=None):
 
     n_epochs = len(history.acc)
     epochs = range(1, n_epochs+1)
@@ -51,9 +51,9 @@ def plot_accuracy(history):
     ax.set_xlabel('Epochs')
     ax.set_ylabel('Accuracy')
     plt.legend(['train', 'test'], loc='upper left')
-    fig.savefig('figures/accuracy.png')
+    fig.savefig(model_dir_struct.plots_dir+'/training_accuracy.png')
     
-def plot_loss(history):
+def plot_loss(history=None, model_dir_struct=None):
 
     n_epochs = len(history.loss)
     epochs = range(1, n_epochs+1)
@@ -65,4 +65,4 @@ def plot_loss(history):
     ax.set_xlabel('Epochs')
     ax.set_ylabel('Loss')
     plt.legend(['train', 'test'], loc='upper left')
-    fig.savefig('figures/loss.png')
+    fig.savefig(model_dir_struct.plots_dir+'/training_loss.png')

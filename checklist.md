@@ -23,7 +23,7 @@ Everything that must be done during Week 2 to have a minimal viable product.
 
 
 ### Final Product
-- [ ] training script
+- [x] training script
 - [x] ability to save/retrieve models
 - [x] testing / inference script
 - [ ] performance data
