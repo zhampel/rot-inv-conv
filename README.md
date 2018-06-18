@@ -11,17 +11,17 @@ git clone https://github.com/zhampel/rot-inv-conv.git
 ## Main Idea
 A purely translational convolution slides a kernel operation over an image, like so:
 
-![cnn-sliding-kernel](images/cnn-sliding.gif)
+![cnn-sliding-kernel](images/cnn-sliding.gif =250x){:height="60%" width="60%"}
 
 By including a rotation of the same kernel, we can search for the maximal activation
 given the kernel orientation.
 The operation using 90 degree turns can be visualized as follows:
 
-![cnn-4rot-kernel](images/cnn-4rot.gif)
+![cnn-4rot-kernel](images/cnn-4rot.gif =250x){:height="60%" width="60%"}
 
 The operation using 45 degree turns looks like this:
 
-![cnn-4rot-kernel](images/cnn-8rot.gif)
+![cnn-4rot-kernel](images/cnn-8rot.gif){:height="60%" width="60%"}
 
 
 ## Requirements
