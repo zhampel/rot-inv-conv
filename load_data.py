@@ -7,6 +7,30 @@ from keras.preprocessing.image import ImageDataGenerator
 
 
 def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_split=0.2):
+    """
+    Function to define training and validation generators
+    for training CNN model.
+
+    Parameters
+    ----------
+    dir_struct        : DataDirStruct dictionary
+                        Data directory definitions
+    batch_size        : int
+                        batch size for training
+    rotation_range    : float
+                        range for rotating images
+    val_split         : float
+                        fraction of data set used
+                        for validation
+
+    Returns
+    -------
+    train_generator   : generator
+                        generator object for training data
+
+    val_generator     : generator
+                        generator object for validation data
+    """
 
     # Get image data from .dat file
     num_classes, height, width = dir_struct.get_img_data()
@@ -45,6 +69,24 @@ def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_s
 
 
 def test_img_generator(dir_struct=None, batch_size=32, rotation_range=0.):
+    """
+    Function to define test generator
+    for testing CNN model.
+
+    Parameters
+    ----------
+    dir_struct        : DataDirStruct dictionary
+                        Data directory definitions
+    batch_size        : int
+                        batch size for training
+    rotation_range    : float
+                        range for rotating images
+
+    Returns
+    -------
+    test_generator    : generator
+                        generator object for test data
+    """
 
     # Get image data from .dat file
     num_classes, height, width = dir_struct.get_img_data()

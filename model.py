@@ -29,6 +29,35 @@ class History(keras.callbacks.Callback):
 
 
 def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_string_list=[]):
+    """
+    Function to build and return model based on input
+    CNN structure and training data.
+
+    Parameters
+    ----------
+    dir_struct        : ModelDirStruct dictionary
+                        Model directory definitions
+    train_gen         : generator
+                        Training data generator
+    valid_gen         : generator
+                        validation data generator
+    epochs            : int
+                        Number of training epochs,
+                        default is to train with all
+                        training data using epochs=-1
+
+    layer_list_string : list of strings
+                        List of convolution layer names
+                        options: 'conv2d', 'conv2d_4rot'
+
+    Returns
+    -------
+    history   : History class object
+                History callbacks from training
+
+    model     : model object
+                Trained keras model object
+    """
 
     # Provide some basic numbers to the model
     batch_size  = train_gen.batch_size
