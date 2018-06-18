@@ -1,6 +1,9 @@
 # Exceptions to saved files
 !rot-conv.png
 
+# No DS_Store storage
+*.DS_Store
+
 # Don't save any data sets
 *.gz
 *.tar
