@@ -1,4 +1,32 @@
-# The Master Checklist
+# Week 3 Checklist
+Everything that must be done during Week 3 to have an optimized product.
+
+## Main Components
+- [ ] Analysis/Performance Tests
+- [ ] Model Structure
+- [ ] Product
+
+### Analysis & Performance Tests
+- [ ] 
+- [ ] 
+- [x] pas fini (incomplete) 
+- [ ] fini! (complete)
+
+
+### Optimized Model Structure
+- [ ] rotationally invariant layer for general convolution sizes
+- [x] pas fini (incomplete) 
+- [ ] fini! (complete)
+
+
+### Final Product
+- [ ] testing switched model/weights script
+- [x] pas fini (incomplete) 
+- [ ] fini! (complete)
+
+
+
+# Week 2 Checklist
 Everything that must be done during Week 2 to have a minimal viable product.
 
 ## Pipeline Components
