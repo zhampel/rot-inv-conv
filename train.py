@@ -79,7 +79,8 @@ def main():
         # Testing generator
         test_gen = test_img_generator(dir_struct=data_dir_struct, \
                                       batch_size=batch_size, \
-                                      rotation_range=rotation_range)
+                                      fixed_rotation=False, \
+                                      rotation_angle=rotation_range)
         
         # Show scores for a subset
         scores = trained_model.evaluate_generator(test_gen, max_queue_size=test_gen.n/10, steps=1)

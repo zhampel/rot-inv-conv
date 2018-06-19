@@ -12,7 +12,8 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    from load_data import test_img_generator, test_fixed_rot_img_generator
+    from load_data import test_img_generator
+    #, test_fixed_rot_img_generator
     from keras.models import model_from_json
     from sklearn.metrics import classification_report, confusion_matrix
     from dir_utils import DataDirStruct, ModelDirStruct
@@ -85,16 +86,10 @@ def main():
     for rot_angle in rot_angle_list:
 
         # Testing generator
-        if run_fixed_rotation:
-            print("Fixed rotation angle: {}".format(rot_angle))
-            test_gen = test_fixed_rot_img_generator(dir_struct=data_dir_struct, \
-                                                    batch_size=num_samples, \
-                                                    rotation_angle=rot_angle)
-        else:
-            print("Random rotation angle range: {}".format(rot_angle))
-            test_gen = test_img_generator(dir_struct=data_dir_struct, \
-                                          batch_size=num_samples, \
-                                          rotation_range=rot_angle)
+        test_gen = test_img_generator(dir_struct=data_dir_struct, \
+                                      batch_size=num_samples, \
+                                      fixed_rotation=run_fixed_rotation, \
+                                      rotation_angle=rot_angle)
 
         ## Run over entire test set
         ## unless a smaller batch is requested
