@@ -65,10 +65,11 @@ class DataDirStruct(object):
 
         f = open(self.data_file, 'r')
         line = f.readline()
-        n, h, w = line.split(',')
-        num_classes, height, width = int(n), int(h), int(w)
+        n, h, w, c = line.split(',')
+        num_classes, height, width, channels = int(n), int(h), int(w), int(c)
         print('Classes: {}, '
-              'Image Dims: ({}, {})'.format(num_classes, height, width))
+              'Image Dims: ({}, {}), '
+              '# Channels: {}'.format(num_classes, height, width, channels))
         f.close()
 
-        return num_classes, height, width
+        return num_classes, height, width, channels

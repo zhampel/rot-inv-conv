@@ -75,7 +75,7 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
                                                patience=20, \
                                                verbose=1, mode='auto')
 
-    callback_list = [history, csv_log, early_stop]
+    callback_list = [history, csv_log]#, early_stop]
 
     ## Model
     # Get requested layer order
