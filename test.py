@@ -13,7 +13,6 @@ try:
     import matplotlib.pyplot as plt
 
     from load_data import test_img_generator
-    #, test_fixed_rot_img_generator
     from keras.models import model_from_json
     from sklearn.metrics import classification_report, confusion_matrix
     from dir_utils import DataDirStruct, ModelDirStruct
@@ -112,7 +111,7 @@ def main():
 
         # Classification report
         print('Classification Report')
-        target_names = ['Cats', 'Dogs', 'Horse', 'poop', 't','a','b','c','x','n']
+        target_names = ['Planes', 'Cars', 'Birds', 'Cats', 'Deer', 'Dogs', 'Frogs', 'Horses', 'Boats', 'Trucks']
         print(classification_report(test_gen.classes[0:len(y_predict)], y_predict, target_names=target_names))
 
         # Print test results to file
