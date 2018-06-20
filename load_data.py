@@ -77,7 +77,7 @@ def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_s
     return train_generator, val_generator
 
 
-def test_img_generator(dir_struct=None, batch_size=32, fixed_rotation=False, rotation_angle=0.):
+def test_img_generator(dir_struct=None, batch_size=32, fixed_rotation=False, rotation_angle=0., save_to_dir=None, save_prefix=''):
     """
     Function to define test generator
     for testing CNN model.
@@ -133,7 +133,9 @@ def test_img_generator(dir_struct=None, batch_size=32, fixed_rotation=False, rot
     test_generator = datagen.flow_from_directory(dir_struct.test_dir,
                                                  target_size=target_size,
                                                  color_mode=color_mode,
-                                                 batch_size=batch_size)
+                                                 batch_size=batch_size,
+                                                 save_to_dir=save_to_dir,
+                                                 save_prefix=save_prefix)
 
     return test_generator
 
