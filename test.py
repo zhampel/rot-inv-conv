@@ -36,11 +36,13 @@ def main():
 
     # Determine which rotation to apply
     run_fixed_rotation = False
+    i_results_prefix = 'random'
     rot_angle_list = [args.rand_rot_angle]
     rot_comment = "Random rotation range (deg): [-{}, {}]".format(rot_angle_list[0], 
                                                                   rot_angle_list[0])
 
     if args.fixed_rot_angle is not None:
+        i_results_prefix = 'fixed'
         run_fixed_rotation = True
         rot_angle_list = args.fixed_rot_angle
         rot_comment = "Fixed rotation angle(s) (deg): {}".format(rot_angle_list)
@@ -72,17 +74,21 @@ def main():
     trained_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
     # Print test results to file
-    results_file = model_dir_struct.main_dir + '/testing.log'
-    text_file = open(results_file, 'w')
+    results_file = model_dir_struct.main_dir + '/tests.log'
+    glob_text_file = open(results_file, 'w')
 
-    text_file.write(rot_comment)
+    glob_text_file.write('#Index\tAngle\tAccuracies\n')
 
     # Get requested sample size
     num_samples = args.num_samples
 
     # Run over rotation angles in list,
     # or just single value used for random range
-    for rot_angle in rot_angle_list:
+    for i, rot_angle in enumerate(rot_angle_list):
+
+        # Print test results to file
+        i_results_file = model_dir_struct.main_dir + '/%s_test_%03i.log'%(i_results_prefix, i)
+        i_text_file = open(i_results_file, 'w')
 
         # Testing generator
         test_gen = test_img_generator(dir_struct=data_dir_struct, \
@@ -115,14 +121,19 @@ def main():
         print(classification_report(test_gen.classes[0:len(y_predict)], y_predict, target_names=target_names))
 
         # Print test results to file
-        text_file.write('\n\nRotation Angle: {}\n\n'.format(rot_angle))
-        text_file.write('\n\nConfusion Matrix:\n\n')
-        text_file.write('{}'.format(cm))
+        i_text_file.write('\n\nRotation Angle: {}\n\n'.format(rot_angle))
+        i_text_file.write('\n\nConfusion Matrix:\n\n')
+        i_text_file.write('{}'.format(cm))
 
-        text_file.write('\n\n\nClassification Report:\n\n')
-        text_file.write('{}'.format(classification_report(test_gen.classes[0:len(y_predict)], y_predict, target_names=target_names)))
+        i_text_file.write('\n\n\nClassification Report:\n\n')
+        i_text_file.write('{}'.format(classification_report(test_gen.classes[0:len(y_predict)], y_predict, target_names=target_names)))
+        i_text_file.close()
+        print('Saved single rotation test results to {}'.format(i_results_file))
+        
+        # Saving accuracy diagonals to file
+        glob_text_file.write('{}\t{}\t{}'.format(i, rot_angle, cm.diagonal()).replace('[','').replace(']',''))
 
-    text_file.close()
+    glob_text_file.close()
     print('Saved test results to {}'.format(results_file))
 
 if __name__ == "__main__":

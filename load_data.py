@@ -5,6 +5,11 @@ import numpy as np
 from keras.utils import np_utils
 from keras.preprocessing.image import ImageDataGenerator
 
+# Color mode dictionary for specifying 
+# color_mode in data generators
+color_mode_dict = {1 : 'grayscale',
+                   3 : 'rgb'}
+
 
 def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_split=0.2):
     """
@@ -35,6 +40,8 @@ def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_s
     # Get image data from .dat file
     num_classes, height, width, channels = dir_struct.get_img_data()
 
+    color_mode = color_mode_dict[channels]
+
     target_size = (height, width)
     
     if not any(target_size):
@@ -50,12 +57,14 @@ def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_s
     # For training
     train_generator = datagen.flow_from_directory(dir_struct.train_dir,
                                                   target_size=target_size,
+                                                  color_mode=color_mode,
                                                   batch_size=batch_size,
                                                   subset='training')
 
     # For validation
     val_generator = datagen.flow_from_directory(dir_struct.train_dir,
                                                 target_size=target_size,
+                                                color_mode=color_mode,
                                                 batch_size=batch_size,
                                                 subset='validation')
 
@@ -93,6 +102,8 @@ def test_img_generator(dir_struct=None, batch_size=32, fixed_rotation=False, rot
 
     # Get image data from .dat file
     num_classes, height, width, channels = dir_struct.get_img_data()
+    
+    color_mode = color_mode_dict[channels]
 
     target_size = (height, width)
     
@@ -121,6 +132,7 @@ def test_img_generator(dir_struct=None, batch_size=32, fixed_rotation=False, rot
     # For testing
     test_generator = datagen.flow_from_directory(dir_struct.test_dir,
                                                  target_size=target_size,
+                                                 color_mode=color_mode,
                                                  batch_size=batch_size)
 
     return test_generator
@@ -151,41 +163,8 @@ class MyPreProcessor(object):
         self.datagen     = ImageDataGenerator()
         self.transform_parameters = {'theta' : fixed_rot_angle_deg}
 
-        # Choose rotation function based on # image channels
-        if (self.img_shape[2] > 1):
-            self.rot_image = self.n_channel_rot
-        else:
-            self.rot_image = self.one_channel_rot
-
         print('\nLoading custom preprocessing function on images of size {}'
               ' with a fixed rotation of {} deg'.format(self.img_shape, self.rot_angle))
-
-    def one_channel_rot(self, img):
-        """Function for single channel (black & white) image"""
-        # Padding: Keras requires 3D tensor for 2D image
-        padded_img = np.zeros((self.img_shape[0], self.img_shape[1], 1))
-        padded_img[:,:,0] = img.copy()
-
-        # Rotate Image
-        rot_img = self.datagen.apply_transform(padded_img, self.transform_parameters)
-        return rot_img[:,:,0]
-
-    def n_channel_rot(self, img):
-        """Function for multiple channel (e.g. rgb) image"""
-        # Padding: Keras requires 3D tensor for 2D image
-        padded_img = np.zeros((self.img_shape[0], self.img_shape[1], 1))
-        proc_img = np.zeros(self.img_shape)
-
-        # Loop through channels
-        for i in range(self.img_shape[2]):
-            padded_img[:,:,0] = img[:,:,i].copy()
-            # Rotate image channel
-            rot_img = self.datagen.apply_transform(padded_img, self.transform_parameters)
-            # Save for output
-            proc_img[:,:,i] = rot_img[:,:,0]
-
-        return proc_img
-
 
 
     def preprocess_img(self, img):
@@ -208,5 +187,17 @@ class MyPreProcessor(object):
 
         # Scale image
         scale_img = img.astype(np.float32) * self.rescale
+        
+        # Padding: Keras requires 3D tensor for 2D image
+        padded_img = np.zeros((self.img_shape[0], self.img_shape[1], 1))
+        proc_img = np.zeros(self.img_shape)
 
-        return self.rot_image(scale_img)
+        # Loop through channels
+        for i in range(self.img_shape[2]):
+            padded_img[:,:,0] = scale_img[:,:,i].copy()
+            # Rotate image channel
+            rot_img = self.datagen.apply_transform(padded_img, self.transform_parameters)
+            # Save for output
+            proc_img[:,:,i] = rot_img[:,:,0]
+
+        return proc_img
