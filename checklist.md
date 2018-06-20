@@ -7,8 +7,10 @@ Everything that must be done during Week 3 to have an optimized product.
 - [ ] Product
 
 ### Analysis & Performance Tests
-- [ ] 
-- [ ] 
+- [x] output/save performance data
+- [ ] acc vs training epoch
+- [ ] acc vs rotation angle
+- [ ] acc for random angle
 - [x] pas fini (incomplete) 
 - [ ] fini! (complete)
 

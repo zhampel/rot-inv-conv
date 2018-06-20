@@ -52,7 +52,7 @@ The directory structure of the image data set must look like the following:
     ...
     - N_CLASSES
 
-The img_data.dat file contains in csv the following values: number of classes, height, width, channels.
+The img_data.dat file contains in CSV the following values: number of classes, height, width, channels.
 For example, for the CIFAR-10 data set, the contents of img_data.dat is `10,32,32,3`.
 
 To start with a standard data set, one can run the following:
