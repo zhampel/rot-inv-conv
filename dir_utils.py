@@ -10,6 +10,7 @@ class ModelDirStruct(object):
     def __init__(self, main_dir=""):
         self.main_dir = main_dir
         self.log_file = main_dir+'/training.log'
+        self.hist_file = main_dir+'/history.pkl'
         self.tb_log_file = main_dir+'/tb_log.log'
         self.model_file = main_dir+'/model.json'
         self.weights_file = main_dir+'/weights.h5'

@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 try:
+    import pickle
     import keras
     from keras.layers import Dense, Flatten
     from keras.layers import Conv2D, MaxPooling2D
@@ -105,16 +106,16 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
                   metrics=['accuracy'])
 
     # Fit model using generator
-    model.fit_generator(train_gen,
-                        steps_per_epoch=batch_size,
-                        epochs=epochs,
-                        verbose=1,
-                        validation_data=valid_gen,
-                        validation_steps=10,
-                        class_weight=None,
-                        max_q_size=1000,
-                        callbacks=callback_list)
-                        #callbacks=[history, csv_log, early_stop])
+    train_hist = model.fit_generator(train_gen,
+                                     steps_per_epoch=batch_size,
+                                     epochs=epochs,
+                                     verbose=1,
+                                     validation_data=valid_gen,
+                                     validation_steps=10,
+                                     class_weight=None,
+                                     max_q_size=1000,
+                                     callbacks=callback_list)
+                                     #callbacks=[history, csv_log, early_stop])
     
     # Save model to JSON
     print("\nSaving model to directory {}".format(dir_struct.main_dir))
@@ -125,6 +126,10 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
 
     # Save weights to HDF5
     model.save_weights(dir_struct.weights_file)
-    print("Saved weights to disk:\t{}\n".format(dir_struct.weights_file))
+    print("Saved weights to disk:\t{}".format(dir_struct.weights_file))
+
+    with open(dir_struct.hist_file, 'wb') as file_pi:
+        pickle.dump(train_hist.history, file_pi)
+    print("Saved history to disk:\t{}\n".format(dir_struct.hist_file))
     
     return history, model

@@ -26,7 +26,6 @@ def main():
     parser = argparse.ArgumentParser(description="Convolutional NN Training Script")
     parser.add_argument("-c", "--config", dest="configfile", default='config.yml', help="Path to yaml configuration file")
     parser.add_argument("-m", "--modelname", dest="modelname", required=True, help="Model name to test")
-    parser.add_argument("-n", "--num_samples", dest="num_samples", default=128, type=int, help="Number of test samples")
 
     rot_parse = parser.add_mutually_exclusive_group()
     rot_parse.add_argument("-r", "--rand_rot_angle", dest="rand_rot_angle", default=0., type=float, help="Random image rotation angle range [deg]")
@@ -79,9 +78,6 @@ def main():
 
     glob_text_file.write('#Index\tAngle\tAccuracies\n')
 
-    # Get requested sample size
-    num_samples = args.num_samples
-
     # Run over rotation angles in list,
     # or just single value used for random range
     for i, rot_angle in enumerate(rot_angle_list):
@@ -91,34 +87,37 @@ def main():
         i_text_file = open(i_results_file, 'w')
 
         # Testing generator
-        test_gen = test_img_generator(dir_struct=data_dir_struct, \
-                                      batch_size=num_samples, \
-                                      fixed_rotation=run_fixed_rotation, \
+        test_gen = test_img_generator(dir_struct=data_dir_struct,
+                                      batch_size=1,
+                                      fixed_rotation=run_fixed_rotation,
                                       rotation_angle=rot_angle)
 
-        ## Run over entire test set
-        ## unless a smaller batch is requested
-        #num_samples = test_gen.n
-        #if args.num_samples > 0:
-        #    num_samples = args.num_samples 
+        # Run over entire test set
+        num_samples = test_gen.n
+
+        # Truth labels for sample
+        y_truth = test_gen.classes
 
         # Evaluate loaded model on test data
-        scores = trained_model.evaluate_generator(test_gen, max_queue_size=num_samples, steps=10)
+        scores = trained_model.evaluate_generator(test_gen, steps=None, verbose=1)
         print("Test %s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
         
         # Running prediction
-        Y_pred = trained_model.predict_generator(test_gen, test_gen.n // num_samples + 1)
+        Y_pred = trained_model.predict_generator(test_gen, steps=None, verbose=1)
         y_predict = np.argmax(Y_pred, axis=1)
 
         # Confusion matrix
         print('Confusion Matrix')
-        cm = confusion_matrix(test_gen.classes[0:len(y_predict)], y_predict)
+        cm = confusion_matrix(y_truth, y_predict)
         print(cm)
 
         # Classification report
         print('Classification Report')
         target_names = ['Planes', 'Cars', 'Birds', 'Cats', 'Deer', 'Dogs', 'Frogs', 'Horses', 'Boats', 'Trucks']
-        print(classification_report(test_gen.classes[0:len(y_predict)], y_predict, target_names=target_names))
+        class_report = classification_report(y_truth, 
+                                             y_predict, 
+                                             target_names=target_names)
+        print(class_report)
 
         # Print test results to file
         i_text_file.write('\n\nRotation Angle: {} deg\n\n'.format(rot_angle))
@@ -126,15 +125,16 @@ def main():
         i_text_file.write('{}'.format(cm))
 
         i_text_file.write('\n\n\nClassification Report:\n\n')
-        i_text_file.write('{}'.format(classification_report(test_gen.classes[0:len(y_predict)], y_predict, target_names=target_names)))
+        i_text_file.write('{}'.format(class_report)) 
         i_text_file.close()
         print('Saved single rotation test results to {}'.format(i_results_file))
         
         # Saving accuracy diagonals to file
-        glob_text_file.write('{}\t{}\t{}'.format(i, rot_angle, cm.diagonal()).replace('[','').replace(']',''))
+        glob_text_file.write('{}\t{}\t{}'.format(i, rot_angle, cm.diagonal()).replace('[', '').replace(']', ''))
 
     glob_text_file.close()
     print('Saved test results to {}'.format(results_file))
+
 
 if __name__ == "__main__":
     main()

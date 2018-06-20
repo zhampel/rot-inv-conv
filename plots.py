@@ -41,28 +41,28 @@ def plot_image(img, cmap='gray', label=''):
 
 def plot_accuracy(history=None, model_dir_struct=None):
 
-    n_epochs = len(history.acc)
+    n_epochs = len(history['acc'])
     epochs = range(1, n_epochs+1)
 
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot(111)
-    ax.plot(epochs, history.acc)
-    ax.plot(epochs, history.val_acc)
-    ax.set_xlabel('Epochs')
+    ax.plot(epochs, history['acc'])
+    ax.plot(epochs, history['val_acc'])
+    ax.set_xlabel('Epoch')
     ax.set_ylabel('Accuracy')
-    plt.legend(['train', 'test'], loc='upper left')
+    plt.legend(['Train', 'Valid'], loc='upper left')
     fig.savefig(model_dir_struct.plots_dir+'/training_accuracy.png')
     
 def plot_loss(history=None, model_dir_struct=None):
 
-    n_epochs = len(history.loss)
+    n_epochs = len(history['loss'])
     epochs = range(1, n_epochs+1)
 
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot(111)
-    ax.plot(epochs, history.loss)
-    ax.plot(epochs, history.val_loss)
-    ax.set_xlabel('Epochs')
+    ax.plot(epochs, history['loss'])
+    ax.plot(epochs, history['val_loss'])
+    ax.set_xlabel('Epoch')
     ax.set_ylabel('Loss')
-    plt.legend(['train', 'test'], loc='upper left')
+    plt.legend(['Train', 'Valid'], loc='upper right')
     fig.savefig(model_dir_struct.plots_dir+'/training_loss.png')

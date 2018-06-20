@@ -1,8 +1,8 @@
 numpy==1.14.5
-tensorflow_gpu==1.8.0
 Keras==2.2.0
-opencv_python==3.4.1.15
+tensorflow_gpu==1.8.0
 matplotlib==2.2.2
+opencv_python==3.4.1.15
 chainer==4.1.0
 pypng==0.0.18
 scikit_learn==0.19.1
