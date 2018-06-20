@@ -82,12 +82,12 @@ def main():
                                       batch_size=num_samples, \
                                       fixed_rotation=run_fixed_rotation, \
                                       rotation_angle=rot_angle, \
-                                      save_to_dir=model_dir_struct.main_dir + '/figures/',
-                                      save_prefix='test_%s_rot_%03i'%(i_results_prefix, i))
+                                      save_to_dir=model_dir_struct.plots_dir,
+                                      save_prefix='/test_%s_rot_%03i'%(i_results_prefix, i))
 
         test_gen.next()
 
-    print('Saved some figures in {}'.format(model_dir_struct.main_dir + '/figures/'))
+    print('Saved some figures in {}'.format(model_dir_struct.plots_dir))
 
 
 if __name__ == "__main__":
