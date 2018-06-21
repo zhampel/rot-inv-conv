@@ -74,16 +74,16 @@ def main():
                                        layer_string_list=layer_string_list)
   
         # Test the model on a subset
-        print("Running model on 1/10 of the test set...\n")
+        print("Running model on the test set...\n")
 
         # Testing generator
         test_gen = test_img_generator(dir_struct=data_dir_struct,
-                                      batch_size=batch_size,
+                                      batch_size=1,
                                       fixed_rotation=False,
                                       rotation_angle=rotation_range)
         
         # Show scores for a subset
-        scores = trained_model.evaluate_generator(test_gen, max_queue_size=test_gen.n/10, steps=1)
+        scores = trained_model.evaluate_generator(test_gen, steps=None, verbose=1)
         print("Testing %s: %.2f%%\n" % (trained_model.metrics_names[1], scores[1]*100))
 
         ## Visualize history

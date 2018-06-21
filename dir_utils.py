@@ -14,6 +14,7 @@ class ModelDirStruct(object):
         self.tb_log_file = main_dir+'/tb_log.log'
         self.model_file = main_dir+'/model.json'
         self.weights_file = main_dir+'/weights.h5'
+        self.epochs_dir = main_dir+'/epochs'
         self.plots_dir = main_dir+'/figures'
         self.setup_dirs()
 
@@ -21,6 +22,9 @@ class ModelDirStruct(object):
         if not os.path.exists(self.main_dir):
             os.mkdir(self.main_dir)
             print('Making models directory {} '.format(self.main_dir))
+        if not os.path.exists(self.epochs_dir):
+            os.mkdir(self.epochs_dir)
+            print('Making epochs directory {} '.format(self.epochs_dir))
         if not os.path.exists(self.plots_dir):
             os.mkdir(self.plots_dir)
             print('Making plots directory {} '.format(self.plots_dir))

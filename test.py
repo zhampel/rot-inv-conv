@@ -16,6 +16,7 @@ try:
     from keras.models import model_from_json
     from sklearn.metrics import classification_report, confusion_matrix
     from dir_utils import DataDirStruct, ModelDirStruct
+    from plots import plot_confusion_matrix
 
 except ImportError as e:
     print(e)
@@ -32,6 +33,8 @@ def main():
     rot_parse.add_argument("-f", "--fixed_rot_angle", dest="fixed_rot_angle", nargs="*", type=float, help="Fixed image rotation angle [deg]")
 
     args = parser.parse_args()
+
+    target_names = ['Planes', 'Cars', 'Birds', 'Cats', 'Deer', 'Dogs', 'Frogs', 'Horses', 'Boats', 'Trucks']
 
     # Determine which rotation to apply
     run_fixed_rotation = False
@@ -82,8 +85,11 @@ def main():
     # or just single value used for random range
     for i, rot_angle in enumerate(rot_angle_list):
 
+        test_prefix = 'test_%s_rot_%03i'%(i_results_prefix, i)
+
         # Print test results to file
-        i_results_file = model_dir_struct.main_dir + '/test_%s_rot_%03i.log'%(i_results_prefix, i)
+        i_results_file = model_dir_struct.main_dir + '/' + test_prefix + '.log'
+        #'/test_%s_rot_%03i.log'%(i_results_prefix, i)
         i_text_file = open(i_results_file, 'w')
 
         # Testing generator
@@ -109,11 +115,15 @@ def main():
         # Confusion matrix
         print('Confusion Matrix')
         cm = confusion_matrix(y_truth, y_predict)
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print(cm)
+        plot_confusion_matrix(cm=cm,
+                              classes=target_names,
+                              outname='cm_%s'%test_prefix,
+                              model_dir_struct=model_dir_struct)
 
         # Classification report
         print('Classification Report')
-        target_names = ['Planes', 'Cars', 'Birds', 'Cats', 'Deer', 'Dogs', 'Frogs', 'Horses', 'Boats', 'Trucks']
         class_report = classification_report(y_truth, 
                                              y_predict, 
                                              target_names=target_names)

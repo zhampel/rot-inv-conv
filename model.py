@@ -75,8 +75,14 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
     early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', \
                                                patience=20, \
                                                verbose=1, mode='auto')
+    best_model_str = '/weights.{epoch:02d}-{val_acc:.2f}.hdf5'
+    mcp = keras.callbacks.ModelCheckpoint(dir_struct.epochs_dir + best_model_str, 
+                                          monitor="val_acc",
+                                          save_best_only=True, 
+                                          save_weights_only=False,
+                                          verbose=1)
 
-    callback_list = [history, csv_log]#, early_stop]
+    callback_list = [history, csv_log, mcp]#, early_stop]
 
     ## Model
     # Get requested layer order
