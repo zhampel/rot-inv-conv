@@ -95,7 +95,8 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
 
     conv_layers = [ conv_dict[layer_string] for layer_string in layer_string_list ]
 
-    # Build sequential model
+    # Build sequential model based on Keras
+    # keras/examples/cifar10_cnn.py
     model = Sequential()
 
     # Two convolution layers

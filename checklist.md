@@ -2,15 +2,16 @@
 Everything that must be done during Week 3 to have an optimized product.
 
 ## Main Components
-- [ ] Analysis/Performance Tests
+- [x] Analysis/Performance Tests
 - [ ] Model Structure
 - [ ] Product
 
 ### Analysis & Performance Tests
 - [x] output/save performance data
-- [ ] acc vs training epoch
-- [ ] acc vs rotation angle
-- [ ] acc for random angle
+- [x] acc vs training epoch
+- [x] acc vs rotation angle
+- [x] acc for random angle
+- [ ] comparing model performance
 - [x] pas fini (incomplete) 
 - [ ] fini! (complete)
 

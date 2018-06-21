@@ -12,10 +12,14 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    from plots import * 
-    from model import model
-    from dir_utils import DataDirStruct, ModelDirStruct
-    from load_data import train_img_generator, test_img_generator
+    #from plots import * 
+    #from model import model
+    #from dir_utils import DataDirStruct, ModelDirStruct
+    #from load_data import train_img_generator, test_img_generator
+    import rot_inv_conv.rot_inv_conv as rimodel
+    from rimodel import model
+    from rimodel import DataDirStruct, ModelDirStruct
+    from rimodel import train_img_generator, test_img_generator
 
 except ImportError as e:
     print(e)
