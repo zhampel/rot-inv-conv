@@ -11,7 +11,7 @@ NAME = 'rot-inv-conv'
 DESCRIPTION = 'A convolution layer incorporating rotational invariance',
 MAINTAINER = 'Zigfried Hampel-Arias'
 MAINTAINER_EMAIL = 'zhampel@gmail.com'
-URL = 'https://github.com/jrbourbeau/pyunfold'
+URL = 'https://github.com/zhampel/rot-inv-conv'
 LICENSE = 'MIT'
 
 
@@ -34,7 +34,7 @@ LONG_DESCRIPTION = read(os.path.join(here,'README.md'))
 
 # Want to read in package version number from __version__.py
 about = {}
-with io.open(os.path.join(here, 'pyunfold', '__version__.py'), encoding='utf-8') as f:
+with io.open(os.path.join(here, 'rot-inv-conv', '__version__.py'), encoding='utf-8') as f:
     exec(f.read(), about)
     VERSION = about['__version__']
 
@@ -96,7 +96,7 @@ setup(
              'scripts/train',
              'scripts/aug_examples',
              'scripts/make_training_figures',
-            ]
+            ],
     # $ setup.py publish support.
     cmdclass={
         'upload': UploadCommand,
