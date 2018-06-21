@@ -4,7 +4,7 @@ try:
     import pickle
     import keras
     from keras.layers import Dense, Flatten
-    from keras.layers import Conv2D, MaxPooling2D
+    from keras.layers import Dropout, Conv2D, MaxPooling2D
     from keras.models import Sequential
     from layers import Convolution2D_4 as conv2d_4rot
 except ImportError as e:
@@ -71,10 +71,13 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
 
     # Callbacks
     history = History()
+
     csv_log = keras.callbacks.CSVLogger(dir_struct.log_file)
+
     early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', \
                                                patience=20, \
                                                verbose=1, mode='auto')
+
     best_model_str = '/weights.{epoch:02d}-{val_acc:.2f}.hdf5'
     mcp = keras.callbacks.ModelCheckpoint(dir_struct.epochs_dir + best_model_str, 
                                           monitor="val_acc",
@@ -86,24 +89,36 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
 
     ## Model
     # Get requested layer order
-    if len(layer_string_list) > 3:
+    if len(layer_string_list) != 4:
         raise ValueError('Requested {} layers. Currently only ' \
-                         'supporting 3 convolutional layers.'.format(len(layer_string_list)))
+                         'supporting 4 convolutional layers.'.format(len(layer_string_list)))
 
     conv_layers = [ conv_dict[layer_string] for layer_string in layer_string_list ]
 
-    # Build model layers
+    # Build sequential model
     model = Sequential()
-    model.add(conv_layers[0](32, kernel_size=(3, 3), strides=(1, 1),
-                     activation='relu',
-                     input_shape=input_shape))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-    model.add(conv_layers[1](64, (3, 3), activation='relu'))
+
+    # Two convolution layers
+    model.add(conv_layers[0](32, kernel_size=(3, 3), padding='same',
+                             use_bias=False, activation='relu', input_shape=input_shape))
+    model.add(conv_layers[1](32, (3, 3), use_bias=False, activation='relu'))
+
+    # Pooling + dropout
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(conv_layers[2](64, (3, 3), activation='relu'))
+    model.add(Dropout(0.25))
+
+    # Two more convolution layers
+    model.add(conv_layers[2](64, (3, 3), use_bias=False, padding='same', activation='relu'))
+    model.add(conv_layers[3](64, (3, 3), use_bias=False, activation='relu'))
+
+    # Pooling + dropout
     model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    # Fully connected layers
     model.add(Flatten())
-    model.add(Dense(1000, activation='relu'))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
     # Compile the model 
@@ -121,7 +136,6 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
                                      class_weight=None,
                                      max_q_size=1000,
                                      callbacks=callback_list)
-                                     #callbacks=[history, csv_log, early_stop])
     
     # Save model to JSON
     print("\nSaving model to directory {}".format(dir_struct.main_dir))
