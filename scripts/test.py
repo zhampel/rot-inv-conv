@@ -12,7 +12,7 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    from riconv.plots import plot_confusion_matrix
+    from plots import plot_confusion_matrix
     from riconv.load_data import test_img_generator
     from riconv.dir_utils import DataDirStruct, ModelDirStruct
 

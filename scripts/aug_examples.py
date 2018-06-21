@@ -12,10 +12,11 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    from load_data import test_img_generator
+    from riconv.load_data import test_img_generator
+    from riconv.dir_utils import DataDirStruct, ModelDirStruct
+
     from keras.models import model_from_json
     from sklearn.metrics import classification_report, confusion_matrix
-    from dir_utils import DataDirStruct, ModelDirStruct
 
 except ImportError as e:
     print(e)

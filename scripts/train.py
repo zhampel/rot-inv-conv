@@ -85,10 +85,6 @@ def main():
         scores = trained_model.evaluate_generator(test_gen, steps=None, verbose=1)
         print("Testing %s: %.2f%%\n" % (trained_model.metrics_names[1], scores[1]*100))
 
-        ## Visualize history
-        #plot_accuracy(history=history, model_dir_struct=model_dir_struct)
-        #plot_loss(history=history, model_dir_struct=model_dir_struct)
-
     print("\nDone training and testing.\n")
 
 if __name__ == "__main__":

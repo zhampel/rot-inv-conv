@@ -9,9 +9,9 @@ try:
     import pickle
     import argparse
     import numpy as np
-    from plots import plot_accuracy, plot_loss
 
-    from dir_utils import ModelDirStruct
+    from plots import plot_accuracy, plot_loss
+    from riconv.dir_utils import ModelDirStruct
 
 except ImportError as e:
     print(e)
