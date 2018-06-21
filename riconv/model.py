@@ -30,7 +30,7 @@ class History(keras.callbacks.Callback):
         self.val_loss.append(logs.get('val_loss'))
 
 
-def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_string_list=[]):
+def conv_model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_string_list=[]):
     """
     Function to build and return model based on input
     CNN structure and training data.

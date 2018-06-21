@@ -12,12 +12,7 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    #from plots import * 
-    #from model import model
-    #from dir_utils import DataDirStruct, ModelDirStruct
-    #from load_data import train_img_generator, test_img_generator
-    #import rot_inv_conv.rot_inv_conv as rimodel
-    from riconv.model import model
+    from riconv.model import conv_model
     from riconv.dir_utils import DataDirStruct, ModelDirStruct
     from riconv.load_data import train_img_generator, test_img_generator
 
@@ -71,11 +66,11 @@ def main():
                                                    val_split=val_split)
         
         # Train the model
-        history, trained_model = model(dir_struct=model_dir_struct,
-                                       train_gen=train_gen,
-                                       valid_gen=valid_gen,
-                                       epochs=epochs,
-                                       layer_string_list=layer_string_list)
+        history, trained_model = conv_model(dir_struct=model_dir_struct,
+                                            train_gen=train_gen,
+                                            valid_gen=valid_gen,
+                                            epochs=epochs,
+                                            layer_string_list=layer_string_list)
   
         # Test the model on a subset
         print("Running model on the test set...\n")
