@@ -16,10 +16,10 @@ try:
     #from model import model
     #from dir_utils import DataDirStruct, ModelDirStruct
     #from load_data import train_img_generator, test_img_generator
-    import rot_inv_conv.rot_inv_conv as rimodel
-    from rimodel import model
-    from rimodel import DataDirStruct, ModelDirStruct
-    from rimodel import train_img_generator, test_img_generator
+    #import rot_inv_conv.rot_inv_conv as rimodel
+    from riconv.model import model
+    from riconv.dir_utils import DataDirStruct, ModelDirStruct
+    from riconv.load_data import train_img_generator, test_img_generator
 
 except ImportError as e:
     print(e)
@@ -50,7 +50,7 @@ def main():
         mod_i = mod_i.strip()
 
         # Get config file parameters
-        outpath = cfg.get(mod_i).get('outpath', 'saved_models/'+mod_i)
+        outpath = cfg.get(mod_i).get('outpath', os.path.join('saved_models', mod_i))
         val_split = cfg.get(mod_i).get('validation_split', 0.2)
         batch_size = cfg.get(mod_i).get('batch_size', 128)
         epochs = cfg.get(mod_i).get('epochs', -1)

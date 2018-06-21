@@ -42,7 +42,7 @@ def main():
         mod_i = mod_i.strip()
 
         # Extract model path from config
-        modelpath = cfg.get(mod_i).get('outpath', 'saved_models/' + mod_i)
+        modelpath = cfg.get(mod_i).get('outpath', os.path.join('saved_models', mod_i))
         if not os.path.exists(modelpath):
             raise ValueError("Requested model {} has not yet been trained.".format(mod_i))
 

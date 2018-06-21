@@ -7,7 +7,7 @@ import sys
 from shutil import rmtree
 from setuptools import setup, find_packages, Command
 
-NAME = 'rot-inv-conv'
+NAME = 'riconv'
 DESCRIPTION = 'A convolution layer incorporating rotational invariance',
 MAINTAINER = 'Zigfried Hampel-Arias'
 MAINTAINER_EMAIL = 'zhampel@gmail.com'
@@ -34,7 +34,7 @@ LONG_DESCRIPTION = read(os.path.join(here,'README.md'))
 
 # Want to read in package version number from __version__.py
 about = {}
-with io.open(os.path.join(here, 'rot-inv-conv', '__version__.py'), encoding='utf-8') as f:
+with io.open(os.path.join(here, 'riconv', '__version__.py'), encoding='utf-8') as f:
     exec(f.read(), about)
     VERSION = about['__version__']
 
@@ -87,8 +87,8 @@ setup(
     author=MAINTAINER,
     author_email=MAINTAINER_EMAIL,
     url=URL,
-    #packages=['rot-inv-conv'],  #same as name
-    packages=find_packages(),
+    packages=['riconv'],
+    #packages=find_packages(),
     install_requires=INSTALL_REQUIRES, #external packages as dependencies
     setup_requires=['setuptools>=38.6.0'],
     scripts=[

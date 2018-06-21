@@ -55,7 +55,7 @@ def main():
 
     # Extract config parameters
     datapath = cfg.get('dataset', '')
-    modelpath = cfg.get(args.modelname).get('outpath', 'saved_models/'+args.modelname)
+    modelpath = cfg.get(args.modelname).get('outpath', os.path.join('saved_models', args.modelname))
 
     # Directory structures for data and model saving
     data_dir_struct = DataDirStruct(datapath)
@@ -76,7 +76,7 @@ def main():
     trained_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
     # Print test results to file
-    results_file = model_dir_struct.main_dir + '/tests.log'
+    results_file = os.path.join(model_dir_struct.main_dir, 'tests.log')
     glob_text_file = open(results_file, 'w')
 
     glob_text_file.write('#Index\tAngle\tAccuracies\n')
@@ -88,7 +88,7 @@ def main():
         test_prefix = 'test_%s_rot_%03i'%(i_results_prefix, i)
 
         # Print test results to file
-        i_results_file = model_dir_struct.main_dir + '/' + test_prefix + '.log'
+        i_results_file = os.path.join(model_dir_struct.main_dir, test_prefix + '.log')
         #'/test_%s_rot_%03i.log'%(i_results_prefix, i)
         i_text_file = open(i_results_file, 'w')
 

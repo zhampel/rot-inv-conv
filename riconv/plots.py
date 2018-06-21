@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 try:
+    import os
     import itertools
     import numpy as np
     import matplotlib as mpl
@@ -53,7 +54,7 @@ def plot_accuracy(history=None, model_dir_struct=None):
     ax.set_xlabel('Epoch')
     ax.set_ylabel('Accuracy')
     plt.legend(['Train', 'Valid'], loc='upper left')
-    fig.savefig(model_dir_struct.plots_dir+'/training_accuracy.png')
+    fig.savefig(os.path.join(model_dir_struct.plots_dir, 'training_accuracy.png'))
 
     
 def plot_loss(history=None, model_dir_struct=None):
@@ -68,7 +69,7 @@ def plot_loss(history=None, model_dir_struct=None):
     ax.set_xlabel('Epoch')
     ax.set_ylabel('Loss')
     plt.legend(['Train', 'Valid'], loc='upper right')
-    fig.savefig(model_dir_struct.plots_dir+'/training_loss.png')
+    fig.savefig(os.path.join(model_dir_struct.plots_dir, 'training_loss.png'))
 
 
 def plot_confusion_matrix(cm=None, classes=None,
@@ -102,4 +103,4 @@ def plot_confusion_matrix(cm=None, classes=None,
     ax.set_ylabel('True Label')
     ax.set_xlabel('Predicted Label')
     plt.tight_layout()
-    fig.savefig(model_dir_struct.plots_dir + '/' + outname + '.png')
+    fig.savefig(os.path.join(model_dir_struct.plots_dir, outname + '.png'))

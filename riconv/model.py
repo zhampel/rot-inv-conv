@@ -1,12 +1,13 @@
 from __future__ import print_function
 
 try:
+    import os
     import pickle
     import keras
     from keras.layers import Dense, Flatten
     from keras.layers import Dropout, Conv2D, MaxPooling2D
     from keras.models import Sequential
-    from layers import Convolution2D_4 as conv2d_4rot
+    from riconv.layers import Convolution2D_4 as conv2d_4rot
 except ImportError as e:
     print(e)
     raise ImportError
@@ -78,8 +79,8 @@ def model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer_stri
                                                patience=20, \
                                                verbose=1, mode='auto')
 
-    best_model_str = '/weights.{epoch:02d}-{val_acc:.2f}.hdf5'
-    mcp = keras.callbacks.ModelCheckpoint(dir_struct.epochs_dir + best_model_str, 
+    best_model_str = 'weights.{epoch:02d}-{val_acc:.2f}.hdf5'
+    mcp = keras.callbacks.ModelCheckpoint(os.path.join(dir_struct.epochs_dir, best_model_str), 
                                           monitor="val_acc",
                                           save_best_only=True, 
                                           save_weights_only=False,

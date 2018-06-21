@@ -8,19 +8,19 @@ class ModelDirStruct(object):
     Directory structure for saving models
     """
     def __init__(self, main_dir=""):
-        self.main_dir = main_dir
-        self.log_file = main_dir+'/training.log'
-        self.hist_file = main_dir+'/history.pkl'
-        self.tb_log_file = main_dir+'/tb_log.log'
-        self.model_file = main_dir+'/model.json'
-        self.weights_file = main_dir+'/weights.h5'
-        self.epochs_dir = main_dir+'/epochs'
-        self.plots_dir = main_dir+'/figures'
+        self.main_dir     = main_dir
+        self.epochs_dir   = os.path.join(main_dir, 'epochs')
+        self.plots_dir    = os.path.join(main_dir, 'figures')
+        self.log_file     = os.path.join(main_dir, 'training.log')
+        self.hist_file    = os.path.join(main_dir, 'history.pkl')
+        self.tb_log_file  = os.path.join(main_dir, 'tb_log.log')
+        self.model_file   = os.path.join(main_dir, 'model.json')
+        self.weights_file = os.path.join(main_dir, 'weights.h5')
         self.setup_dirs()
 
     def setup_dirs(self):
         if not os.path.exists(self.main_dir):
-            os.mkdir(self.main_dir)
+            os.makedirs(self.main_dir)
             print('Making models directory {} '.format(self.main_dir))
         if not os.path.exists(self.epochs_dir):
             os.mkdir(self.epochs_dir)
@@ -38,25 +38,25 @@ class DataDirStruct(object):
     for accessing image data sets
     """
     def __init__(self, main_dir=""):
-        self.main_dir = main_dir
-        self.data_file = main_dir+'/image_data.dat'
-        self.train_dir = main_dir+'/training'
-        self.test_dir = main_dir+'/testing'
+        self.main_dir  = main_dir
+        self.train_dir = os.path.join(main_dir, 'training')
+        self.test_dir  = os.path.join(main_dir, 'testing')
+        self.data_file = os.path.join(main_dir, 'image_data.dat')
         self.check_dirs()
 
     def check_dirs(self):
         if not os.path.exists(self.main_dir):
-            print('No such directory {} '\
+            print('No such directory {} '
             'does not exist!'.format(self.main_dir), file=sys.stderr)
             sys.exit()
 
         if not os.path.exists(self.train_dir):
-            print('No such directory {} '\
+            print('No such directory {} '
             'does not exist!'.format(self.train_dir), file=sys.stderr)
             sys.exit()
 
         if not os.path.exists(self.test_dir):
-            print('No such directory {} '\
+            print('No such directory {} '
             'does not exist!'.format(self.test_dir), file=sys.stderr)
             sys.exit()
 
