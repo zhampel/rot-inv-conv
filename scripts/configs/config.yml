@@ -1,17 +1,18 @@
-dataset: sample_data/cifar-10-images/
-#dataset: sample_data/mnist/pngs/
+dataset: scripts/sample_data/cifar-10-images/
+#dataset: scripts/sample_data/mnist/pngs/
 
 models_to_run: model1, model2
 
 model1:
     outpath: saved_models/model1
-    layers: conv2d, conv2d, conv2d
+    layers: conv2d, conv2d, conv2d, conv2d
     batch_size: 128
     epochs: -1
     validation_split: 0.2
 
 model2:
-    layers: conv2d, conv2d, conv2d_4rot
+    #outpath: NOT SPECIFIED -> 'dataset'/saved_models/model2
+    layers: conv2d, conv2d, conv2d, conv2d_4rot
     batch_size: 128
     epochs: -1
     validation_split: 0.2

@@ -28,7 +28,11 @@ def main():
     # Get configuration file
     with open(args.configfile, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
-  
+ 
+
+    # Path to data in case default modelpath necessary
+    datapath = cfg.get('dataset', '')
+
     # List of available models
     avail_models = cfg.get('models_to_run', '').split(',')
     # Get requested models, if None, get list from config
@@ -45,7 +49,7 @@ def main():
         mod_i = mod_i.strip()
 
         # Extract model path from config
-        modelpath = cfg.get(mod_i).get('outpath', os.path.join('saved_models', mod_i))
+        modelpath = cfg.get(mod_i).get('outpath', os.path.join(datapath, 'saved_models', mod_i))
         if not os.path.exists(modelpath):
             raise ValueError("Requested model {} has not yet been trained.".format(mod_i))
 

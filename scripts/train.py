@@ -24,6 +24,7 @@ def main():
     global args
     parser = argparse.ArgumentParser(description="Convolutional NN Training Script")
     parser.add_argument("-c", "--config", dest="configfile", default='config.yml', help="Path to yaml configuration file")
+    parser.add_argument("-m", "--modelnames", dest="modelnames", nargs="*", default=None, required=False, help="Model name to test")
     args = parser.parse_args()
 
     # Get configuration file
@@ -32,8 +33,14 @@ def main():
 
     # Extract config parameters
     trainpath = cfg.get('dataset', '')
-    model_list = cfg.get('models_to_run', '').split(',')
-    
+
+    # List of available models
+    avail_models = cfg.get('models_to_run', '').split(',')
+    # Get requested models, if None, take config list
+    model_list = args.modelnames
+    if model_list is None:
+        model_list = avail_models
+
     # Print basic info
     print("\n\n... Starting ...")
     print("\nConfiguration file: {}".format(args.configfile))
@@ -45,12 +52,12 @@ def main():
         mod_i = mod_i.strip()
 
         # Get config file parameters
-        outpath = cfg.get(mod_i).get('outpath', os.path.join('saved_models', mod_i))
+        outpath = cfg.get(mod_i).get('outpath', os.path.join(trainpath, 'saved_models', mod_i))
         val_split = cfg.get(mod_i).get('validation_split', 0.2)
         batch_size = cfg.get(mod_i).get('batch_size', 128)
         epochs = cfg.get(mod_i).get('epochs', -1)
         rotation_range = cfg.get(mod_i).get('rotation_range', 0.)
-        layer_string_list = cfg.get(mod_i).get('layers', 'conv2d, conv2d, conv2d')
+        layer_string_list = cfg.get(mod_i).get('layers', 'conv2d, conv2d, conv2d, conv2d')
         layer_string_list = [lay.strip() for lay in layer_string_list.split(',')]
 
         print("Model {} details:\n\t{}\n".format(mod_i, cfg.get(mod_i)))
