@@ -29,7 +29,7 @@ def get_install_requirements(path):
     return requirements
 
 # README
-LONG_DESCRIPTION = read(os.path.join(here,'README.md'))
+LONG_DESCRIPTION = read(os.path.join(here, 'README.md'))
 
 
 # Want to read in package version number from __version__.py

@@ -87,7 +87,6 @@ def plot_confusion_matrix(cm=None, classes=None,
     ax.set_title(title)
     cbar = fig.colorbar(cax)
     tick_marks = np.arange(len(classes))
-    #ax.set_xticks(tick_marks, classes)#, rotation=45)
     ax.set_xticks(tick_marks)
     ax.set_xticklabels(classes, rotation=45)
     ax.set_yticks(tick_marks)
@@ -104,3 +103,30 @@ def plot_confusion_matrix(cm=None, classes=None,
     ax.set_xlabel('Predicted Label')
     plt.tight_layout()
     fig.savefig(os.path.join(model_dir_struct.plots_dir, outname + '.png'))
+
+
+def compare_accuracy(names=None, hist_list=None, model_dir_struct=None):
+
+    head_dir = os.path.split(model_dir_struct.main_dir)[0]
+    model_names = '_'.join(names).replace(" ", "")
+    filename = 'val_accuracy_' + model_names + '.png'
+    figname = os.path.join(head_dir, filename)
+
+    fig = plt.figure(figsize=(10,6))
+    ax = fig.add_subplot(111)
+
+    for i, hist in enumerate(hist_list):
+
+        n_epochs = len(hist['acc'])
+        epochs = range(1, n_epochs+1)
+
+        ax.plot(epochs, hist['val_acc'], label=names[i])
+
+    ax.set_xlabel('Epoch')
+    ax.set_ylabel('Accuracy')
+    plt.legend(loc='upper left', numpoints=1)
+    plt.tight_layout()
+    fig.savefig(figname)
+        
+    print('Saved figure to {}'.format(figname))
+
