@@ -25,16 +25,16 @@ The operation using 45 degree turns looks like this:
 
 
 ## Requirements
-The required packages to run the training and testing scripts can be installed via 
+The package as well as the necessary requirements can be installed via
 ```
-pip install -r requirements.txt
+python setup.py install
 ```
 
 ## Run a training and test
 To train and test a model on a set of images, 
 ```
-python train.py -c config.yml
-python test.py  -c config.yml -m model1 -n 128
+python scripts/train.py -c config.yml
+python scripts/test.py  -c config.yml -m model1 -n 128
 ```
 where the YAML config file is specified via the `-c` flag, and the model to test over
 and the number of samples to test with are given by `-m` and `-n`, respectively.
@@ -57,7 +57,7 @@ For example, for the CIFAR-10 data set, the contents of img_data.dat is `10,32,3
 
 To start with a standard data set, one can run the following:
 ```
-cd sample_data
+cd scripts/sample_data
 python save_cifar10.py
 ```
 which will download the CIFAR-10 data set, convert the images to pngs, and save them
@@ -67,7 +67,7 @@ with the required directory structure above.
 One can also download the MNIST data set
 from [here](http://yann.lecun.com/exdb/mnist/), then convert them to pngs via
 ```
-cd sample_data
+cd scripts/sample_data
 python convert_mnist_to_png.py PATH_TO_MNIST_GZIPS DESIRED_PATH_MNIST_PNGS
 ```
 
