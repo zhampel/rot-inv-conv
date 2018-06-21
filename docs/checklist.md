@@ -11,7 +11,10 @@ Everything that must be done during Week 3 to have an optimized product.
 - [x] acc vs training epoch
 - [x] acc vs rotation angle
 - [x] acc for random angle
-- [ ] comparing model performance
+- [ ] compare model runtimes
+- [ ] compare overall performance
+- [x] compare model validation performance
+- [ ] compare model rotational performance
 - [x] pas fini (incomplete) 
 - [ ] fini! (complete)
 
