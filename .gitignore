@@ -11,6 +11,7 @@
 
 # Don't save any model files
 saved_models/*
+saved_models
 *.log
 *.json
 *.h5
