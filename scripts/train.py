@@ -85,7 +85,7 @@ def main():
 
         # Get training time estimate
         elapsed = time.time() - start_t
-        print("Estimated time to train: {}".format(elapsed))
+        print("Estimated time to train {}: {} sec".format(mod_i, elapsed))
 
         # Test the model on a subset
         print("Running model on the test set...\n")

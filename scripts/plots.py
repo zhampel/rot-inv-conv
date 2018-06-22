@@ -122,11 +122,11 @@ def compare_accuracy(names=None, hist_list=None, model_dir_struct=None):
         n_epochs = len(hist['acc'])
         epochs = range(1, n_epochs+1)
 
-        ax.plot(epochs, hist['val_acc'], label=names[i])
+        ax.plot(epochs, hist['val_acc'], label=names[i].strip())
 
     ax.set_xlabel('Epoch')
     ax.set_ylabel('Accuracy')
-    plt.legend(loc='upper left', numpoints=1)
+    plt.legend(loc='lower right', numpoints=1)
     plt.tight_layout()
     fig.savefig(figname)
         
@@ -157,7 +157,7 @@ def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', model_dir_str
             # Plot data
             pp = ax.plot(theta_vals, met_vals, 
                          label=key.replace('_'+met.lower(),""), 
-                         linestyle='None', marker='o', markersize=8)
+                         linestyle='None', marker='o', markersize=4)
 
             # Need min points to interpolate
             if len(theta_vals) > 3:
@@ -166,7 +166,7 @@ def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', model_dir_str
 
                 ax.plot(tfine, f2(tfine), 
                         color=pp[0].get_color(), 
-                        linestyle='-', linewidth=1.0)
+                        linestyle='-', linewidth=0.5)
 
         ax.set_xlabel('Rotation Angle [deg]')
         ax.set_ylabel('Test {}'.format(met))

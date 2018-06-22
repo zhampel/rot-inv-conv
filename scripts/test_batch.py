@@ -147,7 +147,7 @@ def main():
         out_dict[mod_i+'_probability'] = np.array(prob_rot_list, dtype='float32')
         print('Accuracies for {}: {}'.format(mod_i, prob_rot_list))
     
-    print('\nRotations, accuracies and losses for all')
+    print('\nRotations and accuracies for all')
     print_dict(out_dict)
 
     print('Saved some figures in {}'.format(model_dir_struct.plots_dir))
