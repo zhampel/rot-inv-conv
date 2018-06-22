@@ -38,18 +38,21 @@ python scripts/test.py  -c config.yml -m model1
 ```
 where the YAML config file is specified via the `-c` flag, and the model to test is given by `-m`.
 The directory structure of the image data set must look like the following:
-- PATH_TO_IMAGE_SET
-  - img_data.dat
-  - training
-    - 0
-    - 1
-    ...
-    - N_CLASSES
-  - testing
-    - 0
-    - 1
-    ...
-    - N_CLASSES
+```
+dataset/
+│   img_data.dat
+└───training/
+│   0/
+│   1/
+│  ...
+│   n_classes/
+└───testing/
+│   0/
+│   1/
+│  ...
+│   n_classes/
+```
+
 
 The img_data.dat file contains in CSV the following values: number of classes, height, width, channels.
 For example, for the CIFAR-10 data set, the contents of img_data.dat is `10,32,32,3`.
