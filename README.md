@@ -34,7 +34,7 @@ python setup.py install
 To train and test a model on a set of images, 
 ```
 python scripts/train.py -c config.yml
-python scripts/test.py  -c config.yml -m model1
+python scripts/test_single.py  -c config.yml -m model1
 ```
 where the YAML config file is specified via the `-c` flag, and the model to test is given by `-m`.
 The directory structure of the image data set must look like the following:

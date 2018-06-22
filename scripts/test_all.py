@@ -192,7 +192,7 @@ def main():
         # Model's accuracies
         acc_model_list.append(acc_rot_list)
         loss_model_list.append(loss_rot_list)
-        out_dict[mod_i+'_acc'] = np.array(acc_rot_list, dtype='float32')
+        out_dict[mod_i+'_accuracy'] = np.array(acc_rot_list, dtype='float32')
         out_dict[mod_i+'_loss'] = np.array(loss_rot_list, dtype='float32')
         print('Accuracies for {}: {}'.format(mod_i, acc_rot_list))
 
@@ -221,7 +221,7 @@ def main():
         print("\nSaved rotation test to disk: {}\n".format(filename))
 
         # Plot rotation metrics
-        plot_rotation_metrics(out_dict, pprefix, model_dir_struct)
+        plot_rotation_metrics(out_dict, ['Accuracy','Loss'], pprefix, model_dir_struct)
 
 
 if __name__ == "__main__":
