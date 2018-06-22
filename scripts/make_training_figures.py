@@ -28,7 +28,6 @@ def main():
     # Get configuration file
     with open(args.configfile, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
- 
 
     # Path to data in case default modelpath necessary
     datapath = cfg.get('dataset', '')

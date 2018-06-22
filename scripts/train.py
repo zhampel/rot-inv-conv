@@ -6,6 +6,7 @@ try:
     import os
     import sys
     import yaml
+    import time
     import argparse
     import numpy as np
 
@@ -71,14 +72,21 @@ def main():
                                                    batch_size=batch_size,
                                                    rotation_range=rotation_range,
                                                    val_split=val_split)
-        
+       
+        # Time training
+        start_t = time.time()
+
         # Train the model
         history, trained_model = conv_model(dir_struct=model_dir_struct,
                                             train_gen=train_gen,
                                             valid_gen=valid_gen,
                                             epochs=epochs,
                                             layer_string_list=layer_string_list)
-  
+
+        # Get training time estimate
+        elapsed = time.time() - start_t
+        print("Estimated time to train: {}".format(elapsed))
+
         # Test the model on a subset
         print("Running model on the test set...\n")
 

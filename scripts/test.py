@@ -14,6 +14,7 @@ try:
     import matplotlib.pyplot as plt
 
     from plots import plot_confusion_matrix
+    from plots import plot_rotation_metrics
     from riconv.layers import Convolution2D_4
     from riconv.load_data import test_img_generator
     from riconv.dir_utils import DataDirStruct, ModelDirStruct
@@ -28,6 +29,7 @@ except ImportError as e:
 # Layer dictionary for loading json weights w/custom layer 
 custom_layer_dict = {'Convolution2D_4': Convolution2D_4}
 
+# Dictionary printer
 def print_dict(dct):
     for key, value in sorted(dct.items(), reverse=True):
         print("{}: {}".format(key, value))
@@ -197,22 +199,29 @@ def main():
     print('\nRotations, accuracies and losses for all')
     print_dict(out_dict)
 
-    # Save test information to pickle file
-    head_dir = os.path.split(model_dir_struct.main_dir)[0]
-    model_names = '_'.join(model_list).replace(" ", "")
+    if run_fixed_rotation: 
+        # Save test information to pickle file
+        head_dir = os.path.split(model_dir_struct.main_dir)[0]
+        model_names = '_'.join(model_list).replace(" ", "")
 
-    rot_seq = rot_angle_list[0]
-    rot_names = '%s'%rot_seq
-    if len(rot_angle_list) > 1:
-        rot_seq = (rot_angle_list[0], len(rot_angle_list)-2, rot_angle_list[-1])
-        rot_names = '_'.join(map(str, rot_seq)).replace(" ", "")
+        rot_seq = rot_angle_list[0]
+        rot_names = '%s'%rot_seq
+        if len(rot_angle_list) > 1:
+            rot_seq = (rot_angle_list[0], len(rot_angle_list)-2, rot_angle_list[-1])
+            rot_names = '_'.join(map(str, rot_seq)).replace(" ", "")
 
-    pklname = 'rot_' + i_results_prefix + '_test_' + model_names + "_" + rot_names + '.pkl'
-    filename = os.path.join(head_dir, pklname)
+        # Prefix
+        pprefix = 'rot_' + i_results_prefix + '_test_' + model_names + "_" + rot_names
 
-    with open(filename, 'wb') as file_pi:
-        pickle.dump(out_dict, file_pi)
-    print("\nSaved rotation test to disk: {}\n".format(filename))
+        # Pickel file
+        pklname = pprefix + '.pkl'
+        filename = os.path.join(head_dir, pklname)
+        with open(filename, 'wb') as file_pi:
+            pickle.dump(out_dict, file_pi)
+        print("\nSaved rotation test to disk: {}\n".format(filename))
+
+        # Plot rotation metrics
+        plot_rotation_metrics(out_dict, pprefix, model_dir_struct)
 
 
 if __name__ == "__main__":

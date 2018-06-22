@@ -14,7 +14,7 @@ Everything that must be done during Week 3 to have an optimized product.
 - [ ] compare model runtimes
 - [ ] compare overall performance
 - [x] compare model validation performance
-- [ ] compare model rotational performance
+- [x] compare model rotational performance
 - [x] pas fini (incomplete) 
 - [ ] fini! (complete)
 

@@ -4,11 +4,13 @@ try:
     import os
     import itertools
     import numpy as np
+    from scipy.interpolate import interp1d
+
     import matplotlib as mpl
     import matplotlib.pyplot as plt
-    from matplotlib.ticker import ScalarFormatter
-    from matplotlib.colors import LogNorm
     from matplotlib import rcParams
+    from matplotlib.colors import LogNorm
+    from matplotlib.ticker import ScalarFormatter
 except ImportError as e:
     print(e)
     raise ImportError
@@ -128,5 +130,50 @@ def compare_accuracy(names=None, hist_list=None, model_dir_struct=None):
     plt.tight_layout()
     fig.savefig(figname)
         
-    print('Saved figure to {}'.format(figname))
+    print('Saved figure  to {}'.format(figname))
+
+
+def plot_rotation_metrics(data_dict=None, prefix='', model_dir_struct=None):
+
+    # Get rotation angles
+    theta_vals = data_dict['theta']
+    data_dict.pop('theta', None)
+
+    # For output figure filename
+    head_dir = os.path.split(model_dir_struct.main_dir)[0]
+
+    # Plot metrics for all models' rotations
+    metrics = ['Acc', 'Loss']
+    for met in metrics: 
+        filename = prefix + '_' + met + '.png'
+        figname = os.path.join(head_dir, filename)
+
+        fig = plt.figure(figsize=(10,6))
+        ax = fig.add_subplot(111)
+
+        for key, met_vals in sorted(data_dict.items()):
+            if (met.lower() not in key):
+                continue
+
+            # Plot data
+            pp = ax.plot(theta_vals, met_vals, 
+                         label=key.replace('_'+met.lower(),""), 
+                         linestyle='None', marker='o', markersize=8)
+
+            # Need min points to interpolate
+            if len(theta_vals) > 3:
+                tfine = np.linspace(theta_vals[0], theta_vals[-1], len(theta_vals)*100, endpoint=True)
+                f2 = interp1d(theta_vals, met_vals, kind='cubic')
+
+                ax.plot(tfine, f2(tfine), 
+                        color=pp[0].get_color(), 
+                        linestyle='-', linewidth=1.0)
+
+        ax.set_xlabel('Rotation Angle [deg]')
+        ax.set_ylabel('Test {}'.format(met))
+        plt.legend(loc='upper left', numpoints=1)
+        plt.tight_layout()
+        fig.savefig(figname)
+            
+        print('Saved figure to {}'.format(figname))
 
