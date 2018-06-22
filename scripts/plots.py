@@ -170,7 +170,7 @@ def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', model_dir_str
 
         ax.set_xlabel('Rotation Angle [deg]')
         ax.set_ylabel('Test {}'.format(met))
-        plt.legend(loc='upper left', numpoints=1)
+        plt.legend(loc='best', numpoints=1)
         plt.tight_layout()
         fig.savefig(figname)
             

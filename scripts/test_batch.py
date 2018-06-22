@@ -86,7 +86,9 @@ def main():
     out_dict = {}
     out_dict['theta'] = np.array(rot_angle_list, dtype='float32')
 
-    # List of accuracies for each model
+    # List of accuracies, losses, probs for each model
+    acc_model_list = []
+    loss_model_list = []
     prob_model_list = []
 
     # Loop over requested models
@@ -118,6 +120,8 @@ def main():
 
         # List of accuracies for each rotation
         prob_rot_list = []
+        acc_rot_list = []
+        loss_rot_list = []
         # Run over rotation angles in list,
         # or just single value used for random range
         for i, rot_angle in enumerate(rot_angle_list):
@@ -135,15 +139,27 @@ def main():
 
             # Get Samples
             x_batch, y_batch = test_gen.next()
+            # Evaluate scores
+            scores = trained_model.evaluate(x_batch, y_batch, verbose=1)
+            print("Test %s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
             # Predict classification
             Y_pred = trained_model.predict(x_batch)
+            y_predict = np.argmax(Y_pred, axis=1)
+            # Mean accuracy for batch
+            # Save each rotation loss & accuracy
+            loss_rot_list.append(scores[0])
+            acc_rot_list.append(scores[1])
             # Mean classification probability for truth class
             mean_prob = np.sum(Y_pred*y_batch)/num_samples
             # Save each rotation loss & accuracy
             prob_rot_list.append(mean_prob)
         
         # Model's accuracies
+        acc_model_list.append(acc_rot_list)
+        loss_model_list.append(loss_rot_list)
         prob_model_list.append(prob_rot_list)
+        out_dict[mod_i+'_accuracy'] = np.array(acc_rot_list, dtype='float32')
+        out_dict[mod_i+'_loss'] = np.array(loss_rot_list, dtype='float32')
         out_dict[mod_i+'_probability'] = np.array(prob_rot_list, dtype='float32')
         print('Accuracies for {}: {}'.format(mod_i, prob_rot_list))
     
@@ -176,7 +192,7 @@ def main():
         print("\nSaved rotation test to disk: {}\n".format(filename))
 
         # Plot rotation metrics
-        plot_rotation_metrics(out_dict, ['Probability'], pprefix, model_dir_struct)
+        plot_rotation_metrics(out_dict, ['Accuracy', 'Loss', 'Probability'], pprefix, model_dir_struct)
 
 
 
