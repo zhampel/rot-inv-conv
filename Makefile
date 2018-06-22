@@ -4,4 +4,4 @@ install:
 	python setup.py install
 
 test:
-	python -m pytest pyunfold
+	python -m pytest riconv
