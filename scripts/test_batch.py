@@ -13,6 +13,7 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
+    from plots import plot_confusion_matrix
     from plots import plot_rotation_metrics
     from riconv.layers import Convolution2D_4
     from riconv.load_data import test_img_generator
@@ -51,6 +52,9 @@ def main():
     # Get requested sample size
     num_samples = args.num_samples
 
+    # Class names
+    target_names = ['Planes', 'Cars', 'Birds', 'Cats', 'Deer', 'Dogs', 'Frogs', 'Horses', 'Boats', 'Trucks']
+
     # Determine which rotation to apply
     run_fixed_rotation = False
     i_results_prefix = 'random'
@@ -70,7 +74,6 @@ def main():
 
     # Extract config parameters
     datapath = cfg.get('dataset', '')
-    #modelpath = cfg.get(args.modelname).get('outpath', 'saved_models/'+args.modelname)
 
     # List of available models
     avail_models = cfg.get('models_to_run', '').split(',')
@@ -126,10 +129,12 @@ def main():
         # or just single value used for random range
         for i, rot_angle in enumerate(rot_angle_list):
 
+            print('On {} angle {}'.format(i_results_prefix, rot_angle))
+
             # Choose same batch
             np.random.seed(args.rngseed)
 
-            print('On {} angle {}'.format(i_results_prefix, rot_angle))
+            test_prefix = 'test_%s_rot_%.0f'%(i_results_prefix, rot_angle)
 
             # Testing generator
             test_gen = test_img_generator(dir_struct=data_dir_struct,
@@ -138,19 +143,38 @@ def main():
                                           rotation_angle=rot_angle)
 
             # Get Samples
-            x_batch, y_batch = test_gen.next()
+            x_batch, y_truth = test_gen.next()
+
             # Evaluate scores
-            scores = trained_model.evaluate(x_batch, y_batch, verbose=1)
+            scores = trained_model.evaluate(x_batch, y_truth, verbose=1)
             print("Test %s: %.2f%%" % (trained_model.metrics_names[1], scores[1]*100))
             # Predict classification
             Y_pred = trained_model.predict(x_batch)
             y_predict = np.argmax(Y_pred, axis=1)
+
+            # Confusion matrix
+            print('Confusion Matrix')
+            cm = confusion_matrix(np.argmax(y_truth, axis=1), y_predict)
+            cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+            print(cm)
+            plot_confusion_matrix(cm=cm,
+                                  classes=target_names,
+                                  outname='cm_%s'%test_prefix,
+                                  model_dir_struct=model_dir_struct)
+
+            # Classification report
+            print('Classification Report')
+            class_report = classification_report(np.argmax(y_truth, axis=1), 
+                                                 y_predict, 
+                                                 target_names=target_names)
+            print(class_report)
+
             # Mean accuracy for batch
             # Save each rotation loss & accuracy
             loss_rot_list.append(scores[0])
             acc_rot_list.append(scores[1])
             # Mean classification probability for truth class
-            mean_prob = np.sum(Y_pred*y_batch)/num_samples
+            mean_prob = np.sum(Y_pred*y_truth)/num_samples
             # Save each rotation loss & accuracy
             prob_rot_list.append(mean_prob)
         
