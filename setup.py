@@ -92,8 +92,9 @@ setup(
     install_requires=INSTALL_REQUIRES, #external packages as dependencies
     setup_requires=['setuptools>=38.6.0'],
     scripts=[
-             'scripts/test.py',
              'scripts/train.py',
+             'scripts/test_all.py',
+             'scripts/test_batch.py',
              'scripts/aug_examples.py',
              'scripts/make_training_figures.py',
             ],
