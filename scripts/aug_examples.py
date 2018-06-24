@@ -5,7 +5,6 @@ try:
 
     import os
     import sys
-    import yaml
     import argparse
     import numpy as np
 
@@ -13,7 +12,7 @@ try:
     import matplotlib.pyplot as plt
 
     from riconv.load_data import test_img_generator
-    from riconv.dir_utils import DataDirStruct, ModelDirStruct
+    from riconv.dir_utils import ModelConfigurator, DataDirStruct, ModelDirStruct
 
     from keras.models import model_from_json
     from sklearn.metrics import classification_report, confusion_matrix
@@ -24,7 +23,7 @@ except ImportError as e:
 
 def main():
     global args
-    parser = argparse.ArgumentParser(description="Convolutional NN Training Script")
+    parser = argparse.ArgumentParser(description="Image Augmentation Script")
     parser.add_argument("-c", "--config", dest="configfile", default='config.yml', help="Path to yaml configuration file")
     parser.add_argument("-m", "--modelname", dest="modelname", required=True, help="Model name to test")
     parser.add_argument("-n", "--num_samples", dest="num_samples", default=10, type=int, help="Number of test samples")
@@ -46,12 +45,21 @@ def main():
         rot_angle_list = args.fixed_rot_angle
 
     # Get configuration file
-    with open(args.configfile, 'r') as ymlfile:
-        cfg = yaml.load(ymlfile)
+    hconfig = ModelConfigurator(args.configfile)
 
     # Extract config parameters
-    datapath = cfg.get('dataset', '')
-    modelpath = cfg.get(args.modelname).get('outpath', 'saved_models/'+args.modelname)
+    datapath = hconfig.datapath
+    
+    # Get requested models, if None, take config's list
+    model_list = args.modelnames
+    if model_list is None:
+        model_list = hconfig.avail_models
+
+    # Set model config parameters
+    hconfig.model_config(args.modelname)
+
+    # Extract model path from config
+    modelpath = hconfig.model_outpath
 
     # Directory structures for data and model saving
     data_dir_struct = DataDirStruct(datapath)

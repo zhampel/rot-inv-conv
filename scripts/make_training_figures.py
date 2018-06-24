@@ -5,13 +5,12 @@ try:
 
     import os
     import sys
-    import yaml
     import pickle
     import argparse
     import numpy as np
 
-    from riconv.dir_utils import ModelDirStruct
     from plots import plot_accuracy, plot_loss, compare_accuracy
+    from riconv.dir_utils import ModelConfigurator, ModelDirStruct
 
 except ImportError as e:
     print(e)
@@ -26,18 +25,15 @@ def main():
     args = parser.parse_args()
 
     # Get configuration file
-    with open(args.configfile, 'r') as ymlfile:
-        cfg = yaml.load(ymlfile)
+    hconfig = ModelConfigurator(args.configfile)
 
-    # Path to data in case default modelpath necessary
-    datapath = cfg.get('dataset', '')
-
-    # List of available models
-    avail_models = cfg.get('models_to_run', '').split(',')
-    # Get requested models, if None, get list from config
+    # Extract config parameters
+    datapath = hconfig.datapath
+    
+    # Get requested models, if None, take config's list
     model_list = args.modelnames
     if model_list is None:
-        model_list = avail_models
+        model_list = hconfig.avail_models
 
     # List to store histories
     hist_list = []
@@ -46,9 +42,12 @@ def main():
     for mod_i in model_list:
 
         mod_i = mod_i.strip()
+        
+        # Set model config parameters
+        hconfig.model_config(mod_i)
 
         # Extract model path from config
-        modelpath = cfg.get(mod_i).get('outpath', os.path.join(datapath, 'saved_models', mod_i))
+        modelpath = hconfig.model_outpath
         if not os.path.exists(modelpath):
             raise ValueError("Requested model {} has not yet been trained.".format(mod_i))
 

@@ -5,7 +5,6 @@ try:
 
     import os
     import sys
-    import yaml
     import time
     import argparse
     import numpy as np
@@ -14,8 +13,8 @@ try:
     import matplotlib.pyplot as plt
 
     from riconv.model import conv_model
-    from riconv.dir_utils import DataDirStruct, ModelDirStruct
     from riconv.load_data import train_img_generator, test_img_generator
+    from riconv.dir_utils import ModelConfigurator, DataDirStruct, ModelDirStruct
 
 except ImportError as e:
     print(e)
@@ -26,52 +25,50 @@ def main():
     parser = argparse.ArgumentParser(description="Convolutional NN Training Script")
     parser.add_argument("-c", "--config", dest="configfile", default='config.yml', help="Path to yaml configuration file")
     parser.add_argument("-m", "--modelnames", dest="modelnames", nargs="*", default=None, required=False, help="Model name to test")
+    parser.add_argument("-s", "--seed", dest="rngseed", default=123, type=int, help="RNG Seed to test different samples")
     args = parser.parse_args()
 
     # Get configuration file
-    with open(args.configfile, 'r') as ymlfile:
-        cfg = yaml.load(ymlfile)
+    hconfig = ModelConfigurator(args.configfile)
 
     # Extract config parameters
-    trainpath = cfg.get('dataset', '')
+    datapath = hconfig.datapath
 
-    # List of available models
-    avail_models = cfg.get('models_to_run', '').split(',')
-    # Get requested models, if None, take config list
+    # Get requested models, if None, take config's list
     model_list = args.modelnames
     if model_list is None:
-        model_list = avail_models
+        model_list = hconfig.avail_models
 
     # Print basic info
     print("\n\n... Starting ...")
     print("\nConfiguration file: {}".format(args.configfile))
-    print("\nData set location: {}\n".format(trainpath))
+    print("\nData set location: {}\n".format(datapath))
     print("About to train {} model(s)\n".format(len(model_list)))
 
     # Loop over requested models
     for mod_i in model_list:
         mod_i = mod_i.strip()
 
-        # Get config file parameters
-        outpath = cfg.get(mod_i).get('outpath', os.path.join(trainpath, 'saved_models', mod_i))
-        val_split = cfg.get(mod_i).get('validation_split', 0.2)
-        batch_size = cfg.get(mod_i).get('batch_size', 128)
-        epochs = cfg.get(mod_i).get('epochs', -1)
-        rotation_range = cfg.get(mod_i).get('rotation_range', 0.)
-        layer_string_list = cfg.get(mod_i).get('layers', 'conv2d, conv2d, conv2d, conv2d')
-        layer_string_list = [lay.strip() for lay in layer_string_list.split(',')]
+        # Choose same batch
+        np.random.seed(args.rngseed)
 
-        print("Model {} details:\n\t{}\n".format(mod_i, cfg.get(mod_i)))
+        # Set model config parameters
+        hconfig.model_config(mod_i)
+
+        # Get config file parameters
+        outpath = hconfig.model_outpath
+        epochs = hconfig.epochs
+        layer_string_list = hconfig.layer_string_list
+        # Print out model configuration
+        hconfig.print_model(mod_i)
 
         # Directory structures for data and model saving
-        data_dir_struct = DataDirStruct(trainpath)
+        data_dir_struct = DataDirStruct(datapath)
         model_dir_struct = ModelDirStruct(outpath)
 
         # Training and validation generators
         train_gen, valid_gen = train_img_generator(dir_struct=data_dir_struct,
-                                                   batch_size=batch_size,
-                                                   rotation_range=rotation_range,
-                                                   val_split=val_split)
+                                                   config_struct=hconfig)
        
         # Time training
         start_t = time.time()
@@ -92,9 +89,9 @@ def main():
 
         # Testing generator
         test_gen = test_img_generator(dir_struct=data_dir_struct,
-                                      batch_size=1,
+                                      config_struct=hconfig,
                                       fixed_rotation=False,
-                                      rotation_angle=rotation_range)
+                                      rotation_angle=0.)
         
         # Show scores for a subset
         scores = trained_model.evaluate_generator(test_gen, steps=None, verbose=1)

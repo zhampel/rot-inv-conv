@@ -5,7 +5,6 @@ try:
 
     import os
     import sys
-    import yaml
     import pickle
     import argparse
     import numpy as np
@@ -17,7 +16,7 @@ try:
     from plots import plot_rotation_metrics
     from riconv.layers_rotK import Convolution2D_4
     from riconv.load_data import test_img_generator
-    from riconv.dir_utils import DataDirStruct, ModelDirStruct
+    from riconv.dir_utils import ModelConfigurator, DataDirStruct, ModelDirStruct
 
     from keras.models import model_from_json
     from sklearn.metrics import classification_report, confusion_matrix
@@ -37,7 +36,7 @@ def print_dict(dct):
 
 def main():
     global args
-    parser = argparse.ArgumentParser(description="Convolutional NN Training Script")
+    parser = argparse.ArgumentParser(description="Convolutional NN Testing Script")
     parser.add_argument("-c", "--config", dest="configfile", default='config.yml', help="Path to yaml configuration file")
     parser.add_argument("-m", "--modelnames", dest="modelnames", nargs="*", default=None, required=False, help="Model name to test")
     parser.add_argument("-n", "--num_samples", dest="num_samples", default=10, type=int, help="Number of test samples")
@@ -69,18 +68,15 @@ def main():
         rot_comment = "Fixed rotation angle(s) (deg): {}".format(rot_angle_list)
 
     # Get configuration file
-    with open(args.configfile, 'r') as ymlfile:
-        cfg = yaml.load(ymlfile)
+    hconfig = ModelConfigurator(args.configfile)
 
     # Extract config parameters
-    datapath = cfg.get('dataset', '')
-
-    # List of available models
-    avail_models = cfg.get('models_to_run', '').split(',')
-    # Get requested models, if None, get list from config
+    datapath = hconfig.datapath
+    
+    # Get requested models, if None, take config's list
     model_list = args.modelnames
     if model_list is None:
-        model_list = avail_models
+        model_list = hconfig.avail_models
 
     # Directory structures for data and model saving
     data_dir_struct = DataDirStruct(datapath)
@@ -100,8 +96,11 @@ def main():
         mod_i = mod_i.strip()
         print('\nTesting {} over following rotations: {} ...\n'.format(mod_i, rot_angle_list))
 
+        # Set model config parameters
+        hconfig.model_config(mod_i)
+
         # Extract model path from config
-        modelpath = cfg.get(mod_i).get('outpath', os.path.join(datapath, 'saved_models', mod_i))
+        modelpath = hconfig.model_outpath
         if not os.path.exists(modelpath):
             raise ValueError("Requested model {} has not yet been trained.".format(mod_i))
 

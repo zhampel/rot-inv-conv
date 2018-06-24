@@ -3,10 +3,11 @@ from __future__ import print_function
 try:
     import os
     import pickle
+
     import keras
+    from keras.models import Sequential
     from keras.layers import Dense, Flatten
     from keras.layers import Dropout, Conv2D, MaxPooling2D
-    from keras.models import Sequential
     from riconv.layers import Convolution2D_4 as conv2d_4rot
 except ImportError as e:
     print(e)

@@ -11,7 +11,7 @@ color_mode_dict = {1 : 'grayscale',
                    3 : 'rgb'}
 
 
-def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_split=0.2):
+def train_img_generator(dir_struct=None, config_struct=None):
     """
     Function to define training and validation generators
     for training CNN model.
@@ -20,13 +20,8 @@ def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_s
     ----------
     dir_struct        : DataDirStruct dictionary
                         Data directory definitions
-    batch_size        : int
-                        batch size for training
-    rotation_range    : float
-                        range for rotating images
-    val_split         : float
-                        fraction of data set used
-                        for validation
+    config_struct     : ModelConfigurator dictionary
+                        Runtime configuration
 
     Returns
     -------
@@ -37,8 +32,14 @@ def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_s
                         generator object for validation data
     """
 
-    # Get image data from .dat file
-    num_classes, height, width, channels = dir_struct.get_img_data()
+    # Get image data from configurator
+    num_classes    = config_struct.classes
+    height         = config_struct.height
+    width          = config_struct.width
+    channels       = config_struct.channels
+    batch_size     = config_struct.batch_size
+    val_split      = config_struct.val_split
+    rotation_range = config_struct.rotation_range
 
     color_mode = color_mode_dict[channels]
 
@@ -70,14 +71,14 @@ def train_img_generator(dir_struct=None, batch_size=32, rotation_range=0., val_s
 
     if num_classes != train_generator.num_classes:
         raise ValueError('Expected number of classes "{}" '
-                         'not equal to that found {} in file "{}".'.format(train_generator.num_classes, \
-                                                                           dir_struct.data_file, \
-                                                                           num_classes))
+                         'not equal to that found {} in configuration file "{}".'.format(train_generator.num_classes,
+                                                                                         config_struct.filepath,
+                                                                                         num_classes))
 
     return train_generator, val_generator
 
 
-def test_img_generator(dir_struct=None, batch_size=32, fixed_rotation=False, rotation_angle=0., save_to_dir=None, save_prefix=''):
+def test_img_generator(dir_struct=None, config_struct=None, fixed_rotation=False, rotation_angle=0., save_to_dir=None, save_prefix=''):
     """
     Function to define test generator
     for testing CNN model.
@@ -86,8 +87,8 @@ def test_img_generator(dir_struct=None, batch_size=32, fixed_rotation=False, rot
     ----------
     dir_struct        : DataDirStruct dictionary
                         Data directory definitions
-    batch_size        : int
-                        batch size for training
+    config_struct     : ModelConfigurator dictionary
+                        Runtime configuration
     fixed_rotation    : bool
                         flag for fixed or random
                         angle range of image rotations
@@ -100,8 +101,12 @@ def test_img_generator(dir_struct=None, batch_size=32, fixed_rotation=False, rot
                         generator object for test data
     """
 
-    # Get image data from .dat file
-    num_classes, height, width, channels = dir_struct.get_img_data()
+    # Get image data from configurator
+    num_classes    = config_struct.classes
+    height         = config_struct.height
+    width          = config_struct.width
+    channels       = config_struct.channels
+    batch_size     = config_struct.batch_size
     
     color_mode = color_mode_dict[channels]
 

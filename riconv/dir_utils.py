@@ -6,42 +6,73 @@ import yaml
 import os.path
 
 
-class Configurator(object):
+class ModelConfigurator(object):
     """
     Configuration file data
     """
+
+    # Fields, subfields required in configuration file
+    head_needed  = set(["dataset", "classes", "height", "width", "channels"])
+    model_needed = set(["layers"])
+
     def __init__(self, config_file=""):
         
         # Get configuration file
+        self.filepath = os.path.abspath(config_file)
         with open(config_file, 'r') as ymlfile:
             cfg = yaml.load(ymlfile)
 
         # Loaded config object
         self.cfg = cfg
 
+        # Ensure necessary header fields exist
+        if not self.check_fields(cfg=cfg, tset=self.head_needed):
+            raise AssertionError("Some fields in {} not found. "
+                                 "Required fields: {}".format(self.filepath, 
+                                                              self.head_needed))
+
         # Extract config parameters
-        self.trainpath = cfg.get('dataset', '')
+        self.datapath = cfg.get('dataset', '')
 
         # List of available models
         self.avail_models = cfg.get('models_to_run', '').split(',')
-        self.head_outpath = cfg.get('outpath', os.path.join(self.trainpath, 'saved_models'))
+        self.head_outpath = cfg.get('outpath', os.path.join(self.datapath, 'saved_models'))
+        self.classes  = int(cfg.get('classes'))
+        self.height   = int(cfg.get('height'))
+        self.width    = int(cfg.get('width'))
+        self.channels = int(cfg.get('channels'))
 
     def model_config(self, model_name=""):
         # Get config file parameters for specific model
-        self.name = model_name
+        self.model_name = model_name
         self.mod_cfg = self.cfg.get(model_name)
+
+        # Ensure necessary subfields exist
+        if not self.check_fields(cfg=self.mod_cfg, tset=self.model_needed):
+            raise AssertionError("Some sub-fields of {} in {} not found. "
+                                 "Required fields: {}".format(self.model_name, 
+                                                              self.filepath, 
+                                                              self.model_needed))
+
         self.model_outpath = os.path.join(self.head_outpath, model_name)
-        self.val_split = mod_cfg.get('validation_split', 0.2)
-        self.batch_size = mod_cfg.get('batch_size', 128)
-        self.epochs = mod_cfg.get('epochs', -1)
-        self.rotation_range = mod_cfg.get('rotation_range', 0.)
+        self.val_split = self.mod_cfg.get('validation_split', 0.2)
+        self.batch_size = self.mod_cfg.get('batch_size', 128)
+        self.epochs = self.mod_cfg.get('epochs', -1)
+        self.rotation_range = self.mod_cfg.get('rotation_range', 0.)
         
-        layer_string_list = mod_cfg.get('layers', 'conv2d, conv2d, conv2d, conv2d')
+        layer_string_list = self.mod_cfg.get('layers', 'conv2d, conv2d, conv2d, conv2d')
         self.layer_string_list = [lay.strip() for lay in layer_string_list.split(',')]
 
+    # Ensure basic, necessary fields are in the config file
+    def check_fields(self, cfg=None, tset=None):
+        seen = set()
+        for key, value in cfg.items():
+            seen.add(key)
+        
+        return tset.issubset(seen)
+        
     def print_model(self, model_name=""):
         print("Model {} details:\n\t{}\n".format(model_name, self.cfg.get(model_name)))
-        
 
 
 class ModelDirStruct(object):
@@ -82,7 +113,6 @@ class DataDirStruct(object):
         self.main_dir  = main_dir
         self.train_dir = os.path.join(main_dir, 'training')
         self.test_dir  = os.path.join(main_dir, 'testing')
-        self.data_file = os.path.join(main_dir, 'image_data.dat')
         self.check_dirs()
 
     def check_dirs(self):
@@ -101,21 +131,3 @@ class DataDirStruct(object):
             'does not exist!'.format(self.test_dir), file=sys.stderr)
             sys.exit()
 
-        try:
-            open(self.data_file, 'r')
-        except Exception:
-            print('File %s does not exist!'%self.data_file)
-
-
-    def get_img_data(self):
-
-        f = open(self.data_file, 'r')
-        line = f.readline()
-        n, h, w, c = line.split(',')
-        num_classes, height, width, channels = int(n), int(h), int(w), int(c)
-        print('Classes: {}, '
-              'Image Dims: ({}, {}), '
-              '# Channels: {}'.format(num_classes, height, width, channels))
-        f.close()
-
-        return num_classes, height, width, channels
