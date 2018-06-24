@@ -32,7 +32,6 @@ def shift_rotate(w, shift=1):
     output : float
              Maximum activation
     """
-    print("pooping")
     shape = w.get_shape()
     for i in range(shift):
         w = tf.reshape(tf.gather_nd(w, permutation), shape)
