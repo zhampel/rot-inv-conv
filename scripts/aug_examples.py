@@ -12,7 +12,7 @@ try:
     import matplotlib.pyplot as plt
 
     from riconv.load_data import test_img_generator
-    from riconv.dir_utils import ModelConfigurator, DataDirStruct, ModelDirStruct
+    from riconv.config_utils import ModelConfigurator, DataDirStruct, ModelDirStruct
 
     from keras.models import model_from_json
     from sklearn.metrics import classification_report, confusion_matrix

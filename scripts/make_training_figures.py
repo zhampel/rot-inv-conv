@@ -10,7 +10,7 @@ try:
     import numpy as np
 
     from plots import plot_accuracy, plot_loss, compare_accuracy
-    from riconv.dir_utils import ModelConfigurator, ModelDirStruct
+    from riconv.config_utils import ModelConfigurator, ModelDirStruct
 
 except ImportError as e:
     print(e)

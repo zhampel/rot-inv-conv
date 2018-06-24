@@ -14,7 +14,7 @@ try:
 
     from riconv.model import conv_model
     from riconv.load_data import train_img_generator, test_img_generator
-    from riconv.dir_utils import ModelConfigurator, DataDirStruct, ModelDirStruct
+    from riconv.config_utils import ModelConfigurator, DataDirStruct, ModelDirStruct
 
 except ImportError as e:
     print(e)
