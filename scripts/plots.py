@@ -133,19 +133,16 @@ def compare_accuracy(names=None, hist_list=None, model_dir_struct=None):
     print('Saved figure  to {}'.format(figname))
 
 
-def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', model_dir_struct=None):
+def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', out_path=''):
 
     # Get rotation angles
     theta_vals = data_dict['theta']
     data_dict.pop('theta', None)
 
-    # For output figure filename
-    head_dir = os.path.split(model_dir_struct.main_dir)[0]
-
     # Plot metrics for all models' rotations
     for met in metrics: 
         filename = prefix + '_' + met + '.png'
-        figname = os.path.join(head_dir, filename)
+        figname = os.path.join(out_path, filename)
 
         fig = plt.figure(figsize=(10,6))
         ax = fig.add_subplot(111)
@@ -169,7 +166,7 @@ def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', model_dir_str
                         linestyle='-', linewidth=0.5)
 
         ax.set_xlabel('Rotation Angle [deg]')
-        ax.set_ylabel('Test {}'.format(met))
+        ax.set_ylabel('{}'.format(met))
         plt.legend(loc='best', numpoints=1)
         plt.tight_layout()
         fig.savefig(figname)

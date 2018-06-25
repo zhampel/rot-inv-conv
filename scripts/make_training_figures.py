@@ -52,7 +52,7 @@ def main():
             raise ValueError("Requested model {} has not yet been trained.".format(mod_i))
 
         # Directory structures for model
-        model_dir_struct = ModelDirStruct(modelpath)
+        model_dir_struct = ModelDirStruct(main_dir=outpath, test_model=True)
 
         with open(model_dir_struct.hist_file, 'rb') as f:
             history = pickle.load(f) 

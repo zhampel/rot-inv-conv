@@ -93,11 +93,7 @@ def main():
         hconfig.model_config(mod_i)
 
         # Extract model path from config
-        modelpath = hconfig.model_outpath
-        if not os.path.exists(modelpath):
-            raise ValueError("Requested model {} has not yet been trained.".format(mod_i))
-
-        model_dir_struct = ModelDirStruct(modelpath)
+        model_dir_struct = ModelDirStruct(main_dir=hconfig.model_outpath, test_model=True)
            
         ## Load model to test
         # Load pretrained model from file
@@ -136,7 +132,7 @@ def main():
 
             # Testing generator
             test_gen = test_img_generator(dir_struct=data_dir_struct,
-                                          batch_size=1,
+                                          config_struct=hconfig,
                                           fixed_rotation=run_fixed_rotation,
                                           rotation_angle=rot_angle)
 
@@ -220,7 +216,7 @@ def main():
         print("\nSaved rotation test to disk: {}\n".format(filename))
 
         # Plot rotation metrics
-        plot_rotation_metrics(out_dict, ['Accuracy','Loss'], pprefix, model_dir_struct)
+        plot_rotation_metrics(out_dict, ['Accuracy','Loss'], pprefix, head_dir)
 
 
 if __name__ == "__main__":

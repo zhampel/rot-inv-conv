@@ -64,7 +64,7 @@ def main():
 
         # Directory structures for data and model saving
         data_dir_struct = DataDirStruct(datapath)
-        model_dir_struct = ModelDirStruct(outpath)
+        model_dir_struct = ModelDirStruct(main_dir=outpath, test_model=False)
 
         # Training and validation generators
         train_gen, valid_gen = train_img_generator(dir_struct=data_dir_struct,

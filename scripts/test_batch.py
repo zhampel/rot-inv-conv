@@ -51,9 +51,6 @@ def main():
     # Get requested sample size
     num_samples = args.num_samples
 
-    # Class names
-    target_names = ['Planes', 'Cars', 'Birds', 'Cats', 'Deer', 'Dogs', 'Frogs', 'Horses', 'Boats', 'Trucks']
-
     # Determine which rotation to apply
     run_fixed_rotation = False
     i_results_prefix = 'random'
@@ -73,6 +70,9 @@ def main():
     # Extract config parameters
     datapath = hconfig.datapath
     
+    # Class names
+    class_labels = hconfig.labels
+
     # Get requested models, if None, take config's list
     model_list = args.modelnames
     if model_list is None:
@@ -100,11 +100,7 @@ def main():
         hconfig.model_config(mod_i)
 
         # Extract model path from config
-        modelpath = hconfig.model_outpath
-        if not os.path.exists(modelpath):
-            raise ValueError("Requested model {} has not yet been trained.".format(mod_i))
-
-        model_dir_struct = ModelDirStruct(modelpath)
+        model_dir_struct = ModelDirStruct(main_dir=hconfig.model_outpath, test_model=True)
        
         ## Load model to test
         # Load pretrained model from file
@@ -137,7 +133,7 @@ def main():
 
             # Testing generator
             test_gen = test_img_generator(dir_struct=data_dir_struct,
-                                          batch_size=num_samples,
+                                          config_struct=hconfig,
                                           fixed_rotation=run_fixed_rotation,
                                           rotation_angle=rot_angle)
 
@@ -157,7 +153,7 @@ def main():
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             print(cm)
             plot_confusion_matrix(cm=cm,
-                                  classes=target_names,
+                                  classes=class_labels,
                                   outname='cm_%s'%test_prefix,
                                   model_dir_struct=model_dir_struct)
 
@@ -165,7 +161,7 @@ def main():
             print('Classification Report')
             class_report = classification_report(np.argmax(y_truth, axis=1), 
                                                  y_predict, 
-                                                 target_names=target_names)
+                                                 target_names=class_labels)
             print(class_report)
 
             # Mean accuracy for batch
@@ -215,7 +211,7 @@ def main():
         print("\nSaved rotation test to disk: {}\n".format(filename))
 
         # Plot rotation metrics
-        plot_rotation_metrics(out_dict, ['Accuracy', 'Loss', 'Probability'], pprefix, model_dir_struct)
+        plot_rotation_metrics(out_dict, ['Accuracy', 'Loss', 'Probability'], pprefix, head_dir)
 
 
 

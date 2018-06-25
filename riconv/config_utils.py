@@ -37,10 +37,15 @@ class ModelConfigurator(object):
         # List of available models
         self.avail_models = cfg.get('models_to_run', '').split(',')
         self.head_outpath = cfg.get('outpath', os.path.join(self.datapath, 'saved_models'))
-        self.classes  = int(cfg.get('classes'))
         self.height   = int(cfg.get('height'))
         self.width    = int(cfg.get('width'))
         self.channels = int(cfg.get('channels'))
+        self.classes  = int(cfg.get('classes'))
+        self.labels   = cfg.get('labels', self.default_labels()).replace(" ", "").split(',')
+
+    def default_labels(self):
+        return str(list(range(0, self.classes))).strip('[]')
+        
 
     def model_config(self, model_name=""):
         # Get config file parameters for specific model
@@ -79,7 +84,7 @@ class ModelDirStruct(object):
     """
     Directory structure for saving models
     """
-    def __init__(self, main_dir=""):
+    def __init__(self, main_dir="", test_model=False):
         self.main_dir     = main_dir
         self.epochs_dir   = os.path.join(main_dir, 'epochs')
         self.plots_dir    = os.path.join(main_dir, 'figures')
@@ -88,8 +93,23 @@ class ModelDirStruct(object):
         self.tb_log_file  = os.path.join(main_dir, 'tb_log.log')
         self.model_file   = os.path.join(main_dir, 'model.json')
         self.weights_file = os.path.join(main_dir, 'weights.h5')
-        self.setup_dirs()
+        # Testing vs training check
+        if test_model:
+            self.check_main_dir()
+        else:
+            self.setup_dirs()
 
+    # Ensure model path exists via training 
+    def check_main_dir(self):
+        if not os.path.exists(self.main_dir):
+            raise ValueError("Requested model {} has not yet been trained.".format(self.main_dir))
+        elif not os.path.exists(self.model_file) or not os.path.exists(self.weights_file):
+            raise ValueError("Model files {}, {} not found. Have you trained?".format(self.model_file,
+                                                                                      self.weights_file))
+        else:
+            print("Requested model {} exists.".format(self.main_dir))
+
+    # Setup directory structure for storing trained model
     def setup_dirs(self):
         if not os.path.exists(self.main_dir):
             os.makedirs(self.main_dir)

@@ -1,5 +1,6 @@
 from __future__ import print_function
 import sys
+import cv2
 import os.path
 import numpy as np
 from keras.utils import np_utils
@@ -9,6 +10,38 @@ from keras.preprocessing.image import ImageDataGenerator
 # color_mode in data generators
 color_mode_dict = {1 : 'grayscale',
                    3 : 'rgb'}
+
+def load_image(filepath=''):
+    """
+    Function to load a single image.
+
+    Parameters
+    ----------
+    filepath : string
+               Path to image
+
+    Returns
+    -------
+    img      : array
+               Image array
+    shape    : tuple
+               Image dimensions
+    """
+
+    try:
+        open(filepath, 'r')
+    except IOError:
+        print('File %s does not exist!'%filepath)
+        return
+
+    # Extract image file
+    img = cv2.imread(filepath)
+    
+    # Enforce float data type
+    img = img.astype(np.float32)
+    shape = img.shape
+
+    return img, shape
 
 
 def train_img_generator(dir_struct=None, config_struct=None):
