@@ -14,7 +14,7 @@ try:
 
     from plots import plot_confusion_matrix
     from plots import plot_rotation_metrics
-    from riconv.layers_rotK import Convolution2D_4
+    from riconv.layers import Convolution2D_4
     from riconv.load_data import test_img_generator
     from riconv.config_utils import ModelConfigurator, DataDirStruct, ModelDirStruct
 

@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from keras import backend as K
 from keras.layers.convolutional import Convolution2D
@@ -7,11 +8,13 @@ TensorFlow convolution layer incorporating
 rotations of the kernel, passing along the 
 maximum convolution product from the set of 
 rotations as the output activation.
-
-Inspired by the deep-learning-experiments
-of github.com/raghakot
 """
 
+"""
+Permutation method inspired by the 
+deep-learning-experiments of github.com/raghakot
+"""
+# Clockwise permutation matrix of 3x3 matrix indices
 permutation = [[1, 0], [0, 0], [0, 1], 
                [2, 0], [1, 1], [0, 2], 
                [2, 1], [2, 2], [1, 2]]
@@ -23,20 +26,74 @@ def shift_rotate(w, shift=1):
 
     Parameters
     ----------
-    w      : array_like
+    w      : 3 x 3 x N x N tensor
              Input kernel
     shift  : int
              Requested permutation
 
     Returns
     -------
-    w      : array_lit
+    w      : tensor
              Rotated kernel
     """
     shape = w.get_shape()
     for i in range(shift):
         w = tf.reshape(tf.gather_nd(w, permutation), shape)
     return w
+
+
+"""
+My method: transpose of kernel, followed
+by multiplication with anti-diagonal identity.
+"""
+def minor_eye(shape=None):
+    """
+    Function to provide minor diagonal of ones
+
+    Parameters
+    ----------
+    dim    : tuple (int)
+             Conv layer shape (kernel, filters)
+
+    Returns
+    -------
+    matrix : tensor (float32)
+             Output minor diagonal eye matrix
+    """
+    matrix = np.zeros(shape=shape, dtype='float32')
+    dim = shape[0]
+    for i in range(dim):
+        matrix[i,dim-i-1,:,:] = 1.
+    tf_matrix = tf.convert_to_tensor(matrix, np.float32)
+
+    return tf_matrix
+
+
+def rotate_ninety(w):
+    """
+    Rotate kernel according to 
+    requested (via shift) permutation.
+
+    Parameters
+    ----------
+    w      : array_like
+             Input kernel
+
+    Returns
+    -------
+    w      : array_lit
+             90 deg rotated kernel
+    """
+    shape = w.get_shape()
+    m_eye = minor_eye(shape)
+
+    # Right angle rotation:
+    # w.T * minor_eye = R(theta = 90 deg) * w
+    w_rot = tf.matmul(w, m_eye, transpose_a=True) #, b_is_sparse=True)
+
+    return w_rot
+
+
 
 # Convolution layer with rotated filter activations
 class Convolution2D_4(Convolution2D):
@@ -50,7 +107,11 @@ class Convolution2D_4(Convolution2D):
         # Make list of rotated versions
         w_rot = [w]
         for i in range(3):
-            w = shift_rotate(w, shift=2)
+            # Rotate previous kernel in list
+            # Transpose + anti-diag I
+            w = rotate_ninety(w)
+            # Permutation of indices
+            #w = shift_rotate(w, shift=2)
             w_rot.append(w)
 
         # List of activations for each rotation
