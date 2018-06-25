@@ -1,4 +1,4 @@
-# rot-inv-conv
+# Convolutions with Rotational Operation
 Towards a rotationally invariant convolutional layer.
 
 This package provides a TensorFlow Convolution2D layer that introduces invariance to image rotation.
@@ -7,22 +7,6 @@ To check-out the repo:
 ```
 git clone https://github.com/zhampel/rot-inv-conv.git
 ```
-
-## Main Idea
-A purely translational convolution slides a kernel operation over an image.
-For example, for an L-shaped kernel, this sliding motion looks like so:
-
-![cnn-sliding-kernel](docs/images/cnn-sliding.gif)
-
-By including a rotation of the same kernel, we can search for the maximal activation
-given the kernel orientations.
-The operation using 90 degree turns can be visualized as follows:
-
-![cnn-4rot-kernel](docs/images/cnn-4rot.gif)
-
-The operation using 45 degree turns looks like this:
-
-![cnn-8rot-kernel](docs/images/cnn-8rot.gif)
 
 
 ## Requirements
@@ -76,6 +60,29 @@ from [here](http://yann.lecun.com/exdb/mnist/), then convert them to pngs via
 cd scripts/sample_data
 python convert_mnist_to_png.py PATH_TO_MNIST_GZIPS DESIRED_PATH_MNIST_PNGS
 ```
+
+## Main Idea
+A purely translational convolution slides a kernel operation over an image.
+For example, for an L-shaped kernel, this sliding motion looks like so:
+
+![cnn-sliding-kernel](docs/images/cnn-sliding.gif)
+
+By including a rotation of the same kernel, we can search for the maximal activation
+given the kernel orientations.
+The operation using 90 degree turns can be visualized as follows:
+
+![cnn-4rot-kernel](docs/images/cnn-4rot.gif)
+
+The operation using 45 degree turns looks like this:
+
+![cnn-8rot-kernel](docs/images/cnn-8rot.gif)
+
+
+<p float="left">
+  <img src="docs/images/cnn-sliding.gif" width="100" />
+  <img src="docs/images/cnn-4rot.gif" width="100" />
+  <img src="docs/images/cnn-8rot.gif" width="100" />
+</p>
 
 
 ## License
