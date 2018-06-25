@@ -26,11 +26,9 @@ def minor_eye(dim=3):
     matrix : array
              Output minor diagonal eye matrix
     """
-    matrix = np.eye(dim, dtype='float32')
-    # Run diag -> minor diag swap
+    matrix = np.zeros(shape=(dim, dim), dtype='float32')
     for i in range(dim):
-        matrix[i][i], matrix[i][dim-i-1] = \
-            matrix[i][dim-i-1], matrix[i][i]
+        matrix[i][dim-i-1] = 1.
 
     return matrix
 
