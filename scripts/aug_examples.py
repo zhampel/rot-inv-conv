@@ -58,12 +58,9 @@ def main():
     # Set model config parameters
     hconfig.model_config(args.modelname)
 
-    # Extract model path from config
-    modelpath = hconfig.model_outpath
-
     # Directory structures for data and model saving
     data_dir_struct = DataDirStruct(datapath)
-    model_dir_struct = ModelDirStruct(main_dir=outpath, test_model=True)
+    model_dir_struct = ModelDirStruct(main_dir=hconfig.model_outpath, test_model=True)
        
     ## Load model to test
     # Load pretrained model from file

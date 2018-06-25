@@ -46,13 +46,8 @@ def main():
         # Set model config parameters
         hconfig.model_config(mod_i)
 
-        # Extract model path from config
-        modelpath = hconfig.model_outpath
-        if not os.path.exists(modelpath):
-            raise ValueError("Requested model {} has not yet been trained.".format(mod_i))
-
         # Directory structures for model
-        model_dir_struct = ModelDirStruct(main_dir=outpath, test_model=True)
+        model_dir_struct = ModelDirStruct(main_dir=hconfig.model_outpath, test_model=True)
 
         with open(model_dir_struct.hist_file, 'rb') as f:
             history = pickle.load(f) 
