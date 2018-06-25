@@ -12,10 +12,28 @@ Inspired by the deep-learning-experiments
 of github.com/raghakot
 """
 
-permutation = [[1, 0], [0, 0], [0, 1], [2, 0], [1, 1], [0, 2], [2, 1], [2, 2], [1, 2]]
+def minor_eye(dim=3):
+    """
+    Function to provide minor diagonal of ones
+
+    Parameters
+    ----------
+    dim    : int
+             Sq. matrix dimension
+
+    Returns
+    -------
+    matrix : array
+             Output minor diagonal eye matrix
+    """
+    matrix = np.eye(dim, dtype=float)
+    # Run diag -> minor diag swap
+    for i in range(dim):
+        matrix[i][i], matrix[i][dim-i-1] = \
+            matrix[i][dim-i-1], matrix[i][i]
 
 
-def shift_rotate(w, shift=1):
+def rotate_ninety(w):
     """
     Rotate kernel according to 
     requested (via shift) permutation.
@@ -24,18 +42,21 @@ def shift_rotate(w, shift=1):
     ----------
     w      : array_like
              Input kernel
-    shift  : int
-             Requested permutation
 
     Returns
     -------
-    output : float
-             Maximum activation
+    w      : array_lit
+             90 deg rotated kernel
     """
     shape = w.get_shape()
-    for i in range(shift):
-        w = tf.reshape(tf.gather_nd(w, permutation), shape)
-    return w
+    m_eye = minor_eye(shape[0])
+
+    # Right angle rotation:
+    # w.T * minor_eye = R(theta = 90 deg) * w
+    w_rot = tf.matmul(w, m_eye, transpose_a=True) #, b_is_sparse=True)
+
+    return w_rot
+
 
 # Convolution layer with rotated filter activations
 class Convolution2D_4(Convolution2D):
@@ -49,7 +70,7 @@ class Convolution2D_4(Convolution2D):
         # Make list of rotated version
         w_rot = [w]
         for i in range(3):
-            w = shift_rotate(w, shift=2)
+            w = rotate_ninety(w)
             w_rot.append(w)
 
         # List of activations for each rotation

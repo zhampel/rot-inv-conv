@@ -12,8 +12,9 @@ Inspired by the deep-learning-experiments
 of github.com/raghakot
 """
 
-permutation = [[1, 0], [0, 0], [0, 1], [2, 0], [1, 1], [0, 2], [2, 1], [2, 2], [1, 2]]
-
+permutation = [[1, 0], [0, 0], [0, 1], 
+               [2, 0], [1, 1], [0, 2], 
+               [2, 1], [2, 2], [1, 2]]
 
 def shift_rotate(w, shift=1):
     """
@@ -29,8 +30,8 @@ def shift_rotate(w, shift=1):
 
     Returns
     -------
-    output : float
-             Maximum activation
+    w      : array_lit
+             Rotated kernel
     """
     shape = w.get_shape()
     for i in range(shift):
