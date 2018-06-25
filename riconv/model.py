@@ -80,7 +80,7 @@ def conv_model(dir_struct=None, train_gen=None, valid_gen=None, epochs=-1, layer
                                                patience=20, \
                                                verbose=1, mode='auto')
 
-    best_model_str = 'weights.{epoch:02d}-{val_acc:.2f}.hdf5'
+    best_model_str = 'weights.{epoch:03d}-{val_acc:.2f}.hdf5'
     mcp = keras.callbacks.ModelCheckpoint(os.path.join(dir_struct.epochs_dir, best_model_str), 
                                           monitor="val_acc",
                                           save_best_only=True, 
