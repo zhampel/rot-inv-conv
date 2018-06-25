@@ -8,6 +8,23 @@ To check-out the repo:
 git clone https://github.com/zhampel/rot-inv-conv.git
 ```
 
+## Main Idea
+Consider a simple 3x3 convolution kernel that has an L-shape,
+shown in the animations below.
+The standard 2D convolution slides this kernel operation over an image.
+This purely translational convolution is shown in the left panel.
+
+By including a rotation of the same kernel, we can search for the maximal activation
+given the kernel orientations.
+The operation using 90 degree turns is visualized in the center panel.
+The operation with 45 degree turns is shown in the right panel.
+
+<p float="left">
+  <img src="docs/images/cnn-sliding.gif" width="200" />
+  <img src="docs/images/cnn-4rot.gif" width="200" />
+  <img src="docs/images/cnn-8rot.gif" width="200" />
+</p>
+
 
 ## Requirements
 The package as well as the necessary requirements can be installed by running `make` or via
@@ -60,29 +77,6 @@ from [here](http://yann.lecun.com/exdb/mnist/), then convert them to pngs via
 cd scripts/sample_data
 python convert_mnist_to_png.py PATH_TO_MNIST_GZIPS DESIRED_PATH_MNIST_PNGS
 ```
-
-## Main Idea
-A purely translational convolution slides a kernel operation over an image.
-For example, for an L-shaped kernel, this sliding motion looks like so:
-
-![cnn-sliding-kernel](docs/images/cnn-sliding.gif)
-
-By including a rotation of the same kernel, we can search for the maximal activation
-given the kernel orientations.
-The operation using 90 degree turns can be visualized as follows:
-
-![cnn-4rot-kernel](docs/images/cnn-4rot.gif)
-
-The operation using 45 degree turns looks like this:
-
-![cnn-8rot-kernel](docs/images/cnn-8rot.gif)
-
-
-<p float="left">
-  <img src="docs/images/cnn-sliding.gif" width="100" />
-  <img src="docs/images/cnn-4rot.gif" width="100" />
-  <img src="docs/images/cnn-8rot.gif" width="100" />
-</p>
 
 
 ## License
