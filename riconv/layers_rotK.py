@@ -32,6 +32,8 @@ def minor_eye(dim=3):
         matrix[i][i], matrix[i][dim-i-1] = \
             matrix[i][dim-i-1], matrix[i][i]
 
+    return matrix
+
 
 def rotate_ninety(w):
     """
