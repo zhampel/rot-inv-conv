@@ -55,7 +55,7 @@ dataset/
 │   n_classes/
 ```
 
-One can also run inference on a images given a trained model (model1) and a set of (0, 90, 180) deg rotations via the following:
+One can also run inference on images given a trained model (model1) and a set of (0, 90, 180) deg rotations via the following:
 ```
 python scripts/predict_images.py -c config.yml -f 0 90 180 -i IMAGE.png -m model1
 ```
