@@ -10,6 +10,7 @@ maximum convolution product from the set of
 rotations as the output activation.
 """
 
+
 """
 Permutation method inspired by the 
 deep-learning-experiments of github.com/raghakot
@@ -21,8 +22,8 @@ permutation = [[1, 0], [0, 0], [0, 1],
 
 def shift_rotate(w, shift=1):
     """
-    Rotate kernel according to 
-    requested (via shift) permutation.
+    Rotate 3 x 3 x n x n kernel according 
+    to requested (via shift) permutation.
 
     Parameters
     ----------
@@ -71,17 +72,17 @@ def minor_eye(shape=None):
 
 def rotate_ninety(w):
     """
-    Rotate kernel according to 
-    requested (via shift) permutation.
+    Rotate arbitrary square kernel according 
+    to requested (via shift) permutation.
 
     Parameters
     ----------
-    w      : array_like
+    w      : k x k x n x n tensor
              Input kernel
 
     Returns
     -------
-    w      : array_lit
+    w      : tensor
              90 deg rotated kernel
     """
     shape = w.get_shape()
@@ -106,12 +107,16 @@ class Convolution2D_4(Convolution2D):
         w = self.kernel
         # Make list of rotated versions
         w_rot = [w]
+
+        # Rotate previous kernel in list
         for i in range(3):
-            # Rotate previous kernel in list
+
             # Transpose + anti-diag I
             w = rotate_ninety(w)
+
             # Permutation of indices
             #w = shift_rotate(w, shift=2)
+
             w_rot.append(w)
 
         # List of activations for each rotation
