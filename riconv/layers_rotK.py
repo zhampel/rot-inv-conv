@@ -26,7 +26,7 @@ def minor_eye(dim=3):
     matrix : array
              Output minor diagonal eye matrix
     """
-    matrix = np.eye(dim, dtype=float)
+    matrix = np.eye(dim, dtype='float32')
     # Run diag -> minor diag swap
     for i in range(dim):
         matrix[i][i], matrix[i][dim-i-1] = \
@@ -67,10 +67,11 @@ class Convolution2D_4(Convolution2D):
     def call(self, x, mask=None):
         # Grab the kernel(s)
         w = self.kernel
-        # Make list of rotated version
+        # Make list of rotated versions
         w_rot = [w]
         for i in range(3):
-            w = rotate_ninety(w)
+            # Rotate previous kernel in list
+            w = rotate_ninety(w_rot[i])
             w_rot.append(w)
 
         # List of activations for each rotation

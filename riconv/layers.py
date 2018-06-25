@@ -47,7 +47,7 @@ class Convolution2D_4(Convolution2D):
     def call(self, x, mask=None):
         # Grab the kernel(s)
         w = self.kernel
-        # Make list of rotated version
+        # Make list of rotated versions
         w_rot = [w]
         for i in range(3):
             w = shift_rotate(w, shift=2)
