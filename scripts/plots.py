@@ -144,6 +144,9 @@ def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', out_path=''):
         filename = prefix + '_' + met + '.png'
         figname = os.path.join(out_path, filename)
 
+        #if os.path.exists(figname):
+        #    continue
+
         fig = plt.figure(figsize=(10,6))
         ax = fig.add_subplot(111)
 
@@ -154,16 +157,17 @@ def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', out_path=''):
             # Plot data
             pp = ax.plot(theta_vals, met_vals, 
                          label=key.replace('_'+met.lower(),""), 
-                         linestyle='None', marker='o', markersize=4)
+                         linestyle='-', marker=None)
+                         #linestyle='None', marker='o', markersize=1)
 
             # Need min points to interpolate
-            if len(theta_vals) > 3:
+            if False: #len(theta_vals) > 3:
                 tfine = np.linspace(theta_vals[0], theta_vals[-1], len(theta_vals)*100, endpoint=True)
                 f2 = interp1d(theta_vals, met_vals, kind='cubic')
 
                 ax.plot(tfine, f2(tfine), 
                         color=pp[0].get_color(), 
-                        linestyle='-', linewidth=0.5)
+                        linestyle='-', linewidth=1)
 
         ax.set_xlabel('Rotation Angle [deg]')
         ax.set_ylabel('{}'.format(met))

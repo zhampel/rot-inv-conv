@@ -112,10 +112,10 @@ class Convolution2D_4(Convolution2D):
         for i in range(3):
 
             # Transpose + anti-diag I
-            w = rotate_ninety(w)
+            #w = rotate_ninety(w)
 
             # Permutation of indices
-            #w = shift_rotate(w, shift=2)
+            w = shift_rotate(w, shift=2)
 
             w_rot.append(w)
 

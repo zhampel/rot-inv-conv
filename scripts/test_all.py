@@ -42,7 +42,7 @@ def main():
 
     rot_parse = parser.add_mutually_exclusive_group()
     rot_parse.add_argument("-r", "--rand_rot_angle", dest="rand_rot_angle", default=0., type=float, help="Random image rotation angle range [deg]")
-    rot_parse.add_argument("-f", "--fixed_rot_angle", dest="fixed_rot_angle", nargs="*", type=float, help="Fixed image rotation angle [deg]")
+    rot_parse.add_argument("-f", "--fixed_rot_angle", dest="fixed_rot_angle", nargs=3, type=float, help="(low, high, spacing) fixed image rotation angle [deg]")
 
     args = parser.parse_args()
 
@@ -58,7 +58,8 @@ def main():
     if args.fixed_rot_angle is not None:
         i_results_prefix = 'fixed'
         run_fixed_rotation = True
-        rot_angle_list = args.fixed_rot_angle
+        ang_range = args.fixed_rot_angle
+        rot_angle_list = np.arange(ang_range[0], ang_range[1], ang_range[2])
         rot_comment = "Fixed rotation angle(s) (deg): {}".format(rot_angle_list)
 
     # Get configuration file

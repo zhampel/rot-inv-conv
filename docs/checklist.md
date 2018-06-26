@@ -1,9 +1,35 @@
+# Week 4 Checklist
+Everything that must be done during Week 4 to make it happen.
+
+## Main Components
+- [ ] Client Data Tests
+- [ ] Testing Suite
+- [ ] Product
+
+### Client Data
+- [ ] reproduce tests on client set 
+- [x] pas fini (incomplete) 
+- [ ] fini! (complete)
+
+### Testing Suite
+- [ ] test major functions
+- [x] pas fini (incomplete) 
+- [ ] fini! (complete)
+
+
+### Final Product
+- [ ] deliverable product
+- [x] pas fini (incomplete) 
+- [ ] fini! (complete)
+
+
+
 # Week 3 Checklist
 Everything that must be done during Week 3 to have an optimized product.
 
 ## Main Components
 - [x] Analysis/Performance Tests
-- [ ] Model Structure
+- [x] Model Structure
 - [ ] Product
 
 ### Analysis & Performance Tests
@@ -20,15 +46,15 @@ Everything that must be done during Week 3 to have an optimized product.
 
 
 ### Optimized Model Structure
-- [ ] rotationally invariant layer for general convolution sizes
-- [x] pas fini (incomplete) 
-- [ ] fini! (complete)
+- [x] rotationally invariant layer for general convolution sizes
+- [ ] pas fini (incomplete) 
+- [x] fini! (complete)
 
 
 ### Final Product
-- [ ] testing switched model/weights script
-- [x] pas fini (incomplete) 
-- [ ] fini! (complete)
+- [x] testing switched model/weights script
+- [ ] pas fini (incomplete) 
+- [x] fini! (complete)
 
 
 
