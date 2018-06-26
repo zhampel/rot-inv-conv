@@ -30,7 +30,7 @@ Everything that must be done during Week 3 to have an optimized product.
 ## Main Components
 - [x] Analysis/Performance Tests
 - [x] Model Structure
-- [ ] Product
+- [x] Product
 
 ### Analysis & Performance Tests
 - [x] output/save performance data
