@@ -181,7 +181,9 @@ def main():
         out_dict[mod_i+'_accuracy'] = np.array(acc_rot_list, dtype='float32')
         out_dict[mod_i+'_loss'] = np.array(loss_rot_list, dtype='float32')
         out_dict[mod_i+'_probability'] = np.array(prob_rot_list, dtype='float32')
-        print('Accuracies for {}: {}'.format(mod_i, prob_rot_list))
+        print('Accuracies for {}: {}'.format(mod_i, acc_rot_list))
+        print('Mean Accuracy for {}: {}'.format(mod_i, np.mean(np.array(acc_rot_list))))
+        print('StdD Accuracy for {}: {}'.format(mod_i, np.std(np.array(acc_rot_list))))
     
     print('\nRotations and accuracies for all')
     print_dict(out_dict)

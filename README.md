@@ -26,6 +26,10 @@ The operation with 45 degree turns is shown in the right panel.
 </p>
 
 
+Further details regarding the motivation, methods and results of implementing
+this idea can be found in my presentation [here](http://bit.ly/zhampel-rot-inv-conv-slides).
+
+
 ## Requirements
 The package as well as the necessary requirements can be installed by running `make` or via
 ```

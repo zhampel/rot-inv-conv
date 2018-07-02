@@ -12,6 +12,7 @@ try:
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
+    from plots import plot_bar_probs
     from plots import plot_confusion_matrix
     from plots import plot_rotation_metrics
     from riconv.layers import Convolution2D_4
@@ -183,6 +184,8 @@ def main():
                 pickle.dump(out_dict, file_pi)
             print("\nSaved rotation test to disk: {}\n".format(filename))
 
+            # Plot some prediction probabilites for some rotations
+            plot_bar_probs(out_dict, hconfig.labels, pprefix, model_dir_struct.plots_dir)
             # Plot rotation metrics
             plot_rotation_metrics(out_dict, ['Probability'], pprefix, model_dir_struct.plots_dir)
 

@@ -177,3 +177,43 @@ def plot_rotation_metrics(data_dict=None, metrics=None, prefix='', out_path=''):
             
         print('Saved figure to {}'.format(figname))
 
+
+def plot_bar_probs(data_dict=None, labels=None, prefix='', out_path=''):
+
+    # Get rotation angles
+    theta_vals = data_dict['theta']
+
+    datalist = [data_dict[lab + '_probability'] for lab in labels]
+  
+    labels = labels[0:4]
+    probs = np.zeros(len(labels))
+    y_pos = np.arange(len(labels))
+
+    # Bar plot of probabilities for each image rotation
+    for tidx, theta in enumerate(theta_vals):
+        #if (theta % 10 != 0):
+        if (theta % 90 != 0):
+            continue
+
+        for lidx, lab in enumerate(labels):
+            probs[lidx] = datalist[lidx][tidx]
+
+        filename = prefix + '_' + str(theta) + '.png'
+        figname = os.path.join(out_path, filename)
+
+        fig = plt.figure(figsize=(10,6))
+        ax = fig.add_subplot(111)
+
+        # Bar graph of probabilities
+        ax.barh(y_pos, probs, align='center',
+                color='blue', ecolor='black')
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels(labels)
+        ax.set_xlim(0.,1.)
+        # Labels read top-to-bottom
+        ax.invert_yaxis()
+        plt.tight_layout()
+        fig.savefig(figname)
+            
+        print('Saved figure to {}'.format(figname))
+
