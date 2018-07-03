@@ -2,25 +2,25 @@
 Everything that must be done during Week 4 to make it happen.
 
 ## Main Components
-- [ ] Client Data Tests
-- [ ] Testing Suite
-- [ ] Product
+- [x] Client Data Tests
+- [x] Testing Suite
+- [x] Product
 
 ### Client Data
-- [ ] reproduce tests on client set 
-- [x] pas fini (incomplete) 
-- [ ] fini! (complete)
+- [x] reproduce tests on client set 
+- [ ] pas fini (incomplete) 
+- [x] fini! (complete)
 
 ### Testing Suite
-- [ ] test major functions
-- [x] pas fini (incomplete) 
-- [ ] fini! (complete)
+- [x] test major functions
+- [ ] pas fini (incomplete) 
+- [x] fini! (complete)
 
 
 ### Final Product
-- [ ] deliverable product
-- [x] pas fini (incomplete) 
-- [ ] fini! (complete)
+- [x] deliverable product
+- [ ] pas fini (incomplete) 
+- [x] fini! (complete)
 
 
 

@@ -229,8 +229,8 @@ class MyPreProcessor(object):
         scale_img = img.astype(np.float32) * self.rescale
         
         # Padding: Keras requires 3D tensor for 2D image
-        padded_img = np.zeros((self.img_shape[0], self.img_shape[1], 1))
-        proc_img = np.zeros(self.img_shape)
+        padded_img = np.zeros((scale_img.shape[0], scale_img.shape[1], 1))
+        proc_img = np.zeros(scale_img.shape)
 
         # Loop through channels
         for i in range(self.img_shape[2]):
@@ -239,5 +239,8 @@ class MyPreProcessor(object):
             rot_img = self.datagen.apply_transform(padded_img, self.transform_parameters)
             # Save for output
             proc_img[:,:,i] = rot_img[:,:,0]
+
+        # Resize to target shape
+        proc_img = cv2.resize(proc_img, (self.img_shape[0], self.img_shape[1]))
 
         return proc_img

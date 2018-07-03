@@ -123,8 +123,8 @@ def main():
 
             # Preprocess image
             img_shape = (hconfig.height, hconfig.width, hconfig.channels)
-            assert img_shape == shapes[iidx], \
-                   "Model expected shape {} not equal to loaded image shape {}" \
+            assert img_shape[0] <= shapes[iidx][0] and img_shape[1] <= shapes[iidx][1], \
+                   "Model expected shape {} not equal to or less than loaded image shape {}" \
                    .format(img_shape, shapes[iidx])
 
             prep = MyPreProcessor(img_shape=img_shape,
