@@ -14,6 +14,9 @@ rotations as the output activation.
 """
 Permutation method inspired by the 
 deep-learning-experiments of github.com/raghakot
+as well as discussions with 
+Michael Lomnitz (https://github.com/mlomnitz)
+and Ozgun Yilmaz (https://github.com/OzgunBu).
 """
 # Clockwise permutation matrix of 3x3 matrix indices
 permutation = [[1, 0], [0, 0], [0, 1], 
