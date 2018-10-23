@@ -10,7 +10,7 @@ from setuptools import setup, find_packages, Command
 NAME = 'riconv'
 DESCRIPTION = 'A convolution layer incorporating rotational invariance',
 MAINTAINER = 'Zigfried Hampel-Arias'
-MAINTAINER_EMAIL = 'zhampel@gmail.com'
+MAINTAINER_EMAIL = 'zhampel.github@gmail.com'
 URL = 'https://github.com/zhampel/rot-inv-conv'
 LICENSE = 'MIT'
 
