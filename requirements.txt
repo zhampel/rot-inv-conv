@@ -9,4 +9,4 @@ chainer==4.2.0
 pypng==0.0.18
 scikit_learn==0.19.1
 tensorflow==1.8.0
-PyYAML==3.12
+PyYAML>=4.2b1
